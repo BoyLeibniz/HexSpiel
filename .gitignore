@@ -31,6 +31,7 @@
 
 # Visual Studio cache directory
 .vs/
+.vsconfig
 
 # Visual Studio Code settings directory
 .vscode/
@@ -70,6 +71,7 @@ sysinfo.txt
 *.unitypackage
 *.unitypackage.meta
 *.app
+UpgradeLog.htm
 
 # Crashlytics generated file
 crashlytics-build.properties
