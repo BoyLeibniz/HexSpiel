@@ -58,4 +58,4 @@ ProjectSettings/     # Unity config files
 
 ---
 
-© 2025 This project is currently in prototype phase.
+© 2025 BoyLeibniz. This project is currently in prototype phase.
