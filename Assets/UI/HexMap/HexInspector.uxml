@@ -1,0 +1,36 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd">
+    <Style src="project://database/Assets/UI/HexInspector.uss?fileID=7433441132597879392&amp;guid=d6c6d059e0eb82d4a8a04dc15cd8eeeb&amp;type=3#HexInspector" />
+    <ui:VisualElement class="inspector-container">
+
+        <ui:VisualElement class="grid-settings">
+            <ui:Label text="Map Settings" class="header" />
+
+            <ui:VisualElement class="field-row">
+                <ui:Label text="Width:" class="field-label" />
+                <ui:IntegerField name="gridWidthField"/>
+            </ui:VisualElement>
+
+            <ui:VisualElement class="field-row">
+                <ui:Label text="Height:" class="field-label" />
+                <ui:IntegerField name="gridHeightField" />
+            </ui:VisualElement>
+
+            <ui:Button name="saveButton" text="Save" />
+            <ui:Button name="loadButton" text="Load" />
+            <ui:Button name="regenerateButton" text="Reset" />
+        </ui:VisualElement>
+
+        <ui:VisualElement class="divider"/>
+
+        <ui:Label text="Hex Settings" class="header" />
+        <ui:Label text="Coordinates:" />
+        <ui:Label name="coordLabel" text="(x, z)" class="value-label" />
+        <ui:Label text="Hex Type:" />
+        <ui:DropdownField name="typeDropdown" />
+        <ui:Label text="Movement Cost:" />
+        <ui:Slider name="costSlider" highValue="5" lowValue="0" value="1" />
+        <ui:Label name="costValue" text="1" class="value-label" />
+        <ui:Button name="applyButton" text="Apply" />
+
+    </ui:VisualElement>
+</ui:UXML>

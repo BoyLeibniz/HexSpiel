@@ -9,6 +9,12 @@ public class HexTileVisuals : MonoBehaviour
 
     public bool affectBaseColorOnHover = true;
 
+    private HexInspectorController inspectorController;
+    public void SetInspector(HexInspectorController controller)
+    {
+        this.inspectorController = controller;
+    }
+
     private MaterialPropertyBlock props;
     private Renderer rend;
     private bool isHovered = false;
@@ -38,6 +44,12 @@ public class HexTileVisuals : MonoBehaviour
     {
         isSelected = !isSelected;
         UpdateVisualState();
+
+        if (TryGetComponent<HexCell>(out var cell) && inspectorController != null)
+            if (isSelected)
+                inspectorController.AddToSelection(cell);
+            else
+                inspectorController.RemoveFromSelection(cell);
     }
 
     void SetColor(Color color)
@@ -47,31 +59,48 @@ public class HexTileVisuals : MonoBehaviour
         rend.SetPropertyBlock(props);
     }
 
-    void SetGlow(Color glowColor)
+    void SetGlow(Color color)
     {
         rend.GetPropertyBlock(props);
-        props.SetColor("_EmissionColor", glowColor);
+
+        Color.RGBToHSV(color, out float h, out float s, out float v);
+        float target = 1.2f;
+        float gain = target / Mathf.Max(0.01f, v);
+
+        gain = Mathf.Clamp(gain, 0.8f, 5.0f); // optional: prevent excessive bloom
+        Color emission = color.linear * gain;
+
+        props.SetColor("_EmissionColor", emission);
         rend.SetPropertyBlock(props);
+    }
+
+    public void SetSelected(bool value)
+    {
+        isSelected = value;
+        UpdateVisualState();
     }
 
     void UpdateVisualState()
     {
+        if (inspectorController == null)
+            return;
+
+        Color current = inspectorController.GetCurrentTerrainColor();
+
         if (isSelected)
         {
-            SetColor(selectedColor);
-            SetGlow(selectedColor * 1.2f);
+            SetColor(current);
+            SetGlow(current * 1.1f);
         }
         else if (isHovered)
         {
-            if (affectBaseColorOnHover && hoverColor.a > 0.01f)
-                SetColor(hoverColor);
-
-            SetGlow(hoverColor * 1.1f);
+            SetColor(current);
+            SetGlow(current * 1.2f); // Slightly stronger glow
         }
         else
         {
             SetColor(baseColor);
-            SetGlow(Color.black); // Turn off glow
+            SetGlow(Color.black);
         }
     }
 

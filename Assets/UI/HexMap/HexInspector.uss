@@ -1,0 +1,72 @@
+.inspector-container {
+    width: 200px;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+
+    padding: 10px;
+    background-color: #2D2D2D;
+    color: #E0E0E0 ;
+    display: flex;  
+    flex-direction: column;
+}
+
+.inspector-container > * {
+    margin-bottom: 6px;
+}
+
+.header {
+    font-size: 16px;
+    margin-bottom: 8px;
+}
+
+.value-label {
+    color: #CCCCCC;
+    font-size: 14px;
+}
+
+.grid-settings {
+    margin-bottom: 12px;
+}
+
+.grid-settings > * {
+    margin-bottom: 6px;
+}
+
+.field-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    gap: 6px;
+}
+
+.field-label {
+    width: 60px;
+    color: #E0E0E0;
+    font-size: 14px;
+    flex-shrink: 0;
+}
+
+.divider {
+    height: 8px;
+}
+
+IntegerField {
+    color: #2D2D2D; /* input field font color */
+    min-width: 0;
+    max-width: 60%; /* 🚨 this is the magic to prevent overflow */
+}
+
+Button {
+    color: #FFFFFF;
+    font-size: 15px;
+    font-weight: bold;
+}
+
+#typeDropdown {
+    color: white;
+}
+

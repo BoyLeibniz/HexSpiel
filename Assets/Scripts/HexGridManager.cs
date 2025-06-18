@@ -33,6 +33,12 @@ public class HexGridManager : MonoBehaviour
     /// </summary>
     public HexGridMat mat;
 
+    /// <summary>
+    /// Reference to the HexInspectorController for managing tile selection and properties.
+    /// Must be assigned in the Unity Editor.
+    /// </summary>
+    public HexInspectorController inspectorController;
+
     // Constants for flat-topped hex layout based on Unity unit scale.
     private const float HEX_WIDTH = 1.5f;     // Distance between centers of adjacent hexes horizontally.
     private const float HEX_HEIGHT = 1.732f;  // Full height of a hex (≈ sqrt(3)) for vertical spacing.
@@ -87,6 +93,12 @@ public class HexGridManager : MonoBehaviour
                 // Initialize the tile's logic script (HexCell) with its coordinates and world position
                 HexCell cell = hexGO.GetComponent<HexCell>();
                 cell.Init(coord, worldPos);
+
+                // Share the Controller with the Hex
+                var visuals = hexGO.GetComponent<HexTileVisuals>();
+                if (visuals != null && inspectorController != null)
+                    visuals.SetInspector(inspectorController);
+
             }
         }
 
@@ -121,7 +133,26 @@ public class HexGridManager : MonoBehaviour
     {
         for (int i = transform.childCount - 1; i >= 0; i--)
         {
-            DestroyImmediate(transform.GetChild(i).gameObject);
+            Transform child = transform.GetChild(i);
+            if (child.GetComponent<DoNotClear>() != null)
+                continue;
+
+            DestroyImmediate(child.gameObject);
         }
     }
+    /// <summary>
+    /// Regenerates the hex grid with new dimensions, clearing the old grid first.
+    /// </summary>
+    public void RegenerateGrid(int newWidth, int newHeight)
+    {
+        this.width = newWidth;
+        this.height = newHeight;
+
+        // Clear old grid (your method here)
+        ClearGrid();
+
+        // Generate new grid
+        GenerateGrid();
+    }
+
 }
