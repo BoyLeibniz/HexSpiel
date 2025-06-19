@@ -1,6 +1,6 @@
 # HexSpiel
 
-Welcome to HexSpiel! A Unity-based 3D hex-and-counter wargame inspired by classic tabletop systems.
+Welcome to HexSpiel! A Unity-based 3D hex-and-counter strategy game inspired by classic tabletop systems.
 
 ## 🛉 Project Overview
 
@@ -12,7 +12,7 @@ HexSpiel is a modular turn-based strategy engine with three main sub-projects:
 
 ## 🎮 Unity Version
 
-Tested with **Unity 2022.3.49f1 (LTS)**
+Developed with **Unity 2022.3.49f1 (LTS)**
 
 ## 📁 Project Structure
 
@@ -22,6 +22,7 @@ Assets/
   Prefabs/           # Hex tile prefabs
   Scenes/            # Map builder, game player, etc.
   Materials/         # Tile materials, overlays
+  SaveSystem/        # Save/load scaffolding (IDataPersistence, MapData)
 ProjectSettings/     # Unity config files
 ```
 
@@ -50,8 +51,14 @@ ProjectSettings/     # Unity config files
 ## 🗽 Roadmap (Early Stage)
 
 * [x] Basic grid generation
-* [x] Mat placement
+* [x] Mat placement and Camera Control
+* [x] Hex selection and property editing
+* [ ] Map Save and Load
 * [ ] Tile overlays
+* [ ] Unit Pattern maintenance
+* [ ] Army List maintenance
+* [ ] Game Scenario maintenance
+* [ ] Game Setup and presentation
 * [ ] Unit placement
 * [ ] Turn system
 * [ ] AI player logic
