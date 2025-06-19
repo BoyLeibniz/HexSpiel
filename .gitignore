@@ -72,6 +72,8 @@ sysinfo.txt
 *.unitypackage.meta
 *.app
 UpgradeLog.htm
+scratch.txt
+HexSpiel_preedit.zip
 
 # Crashlytics generated file
 crashlytics-build.properties

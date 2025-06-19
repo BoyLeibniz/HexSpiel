@@ -28,6 +28,12 @@ ProjectSettings/     # Unity config files
 
 ## 🛠️ Getting Started
 
+If you have the zip archive already:
+
+1. Just unzip to your local folder of choice
+
+Otherwise:
+
 1. Clone the repo:
 
    ```bash

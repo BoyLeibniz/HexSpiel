@@ -10,6 +10,8 @@ public class HexInspectorController : MonoBehaviour
 
     private IntegerField gridWidthField;
     private IntegerField gridHeightField;
+    private Button saveButton;
+    private Button loadButton;
     private Button regenerateButton;
 
     private List<TerrainTemplate> templates = new()
@@ -39,6 +41,22 @@ public class HexInspectorController : MonoBehaviour
         gridHeightField = root.Q<IntegerField>("gridHeightField");
         gridWidthField.value = hexGridManager.width;
         gridHeightField.value = hexGridManager.height;
+
+        saveButton = root.Q<Button>("saveButton");
+
+        saveButton.clicked += () =>
+        {
+            Debug.Log($"Saving Map");
+            // Here you would call your save logic
+        };
+
+        loadButton = root.Q<Button>("loadButton");
+
+        loadButton.clicked += () =>
+        {
+            Debug.Log($"Loading Map");
+            // Here you would call your load logic
+        };
 
         regenerateButton = root.Q<Button>("regenerateButton");
 
