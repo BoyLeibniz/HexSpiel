@@ -48,6 +48,15 @@ Otherwise:
    code .
    ```
 
+## ⌨️ Keyboard Shortcuts
+
+While running the project, the following shortcuts are available:
+
+* **Ctrl+A** (or **Cmd+A** on macOS): Select all hex tiles
+* **Esc**: Cancel current selection
+
+These are intended to assist during editing and testing phases.
+
 ## 🤝 Contributing
 
 * Use XML doc comments for all public scripts

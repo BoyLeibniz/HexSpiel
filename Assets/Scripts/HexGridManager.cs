@@ -1,3 +1,5 @@
+// Assets/Scripts/HexGridManager.cs
+
 using UnityEngine;
 using System.Collections.Generic;
 
@@ -5,7 +7,7 @@ using System.Collections.Generic;
 /// Manages the generation, layout, and cleanup of a 2D hexagonal grid using flat-topped hexes
 /// and Axial notation.
 /// </summary>
-public class HexGridManager : MonoBehaviour
+public class HexGridManager : MonoBehaviour, IDataPersistence
 {
     /// <summary>
     /// Number of hex tiles horizontally (q-axis).
@@ -39,16 +41,31 @@ public class HexGridManager : MonoBehaviour
     /// </summary>
     public HexInspectorController inspectorController;
 
-    // Constants for flat-topped hex layout based on Unity unit scale.
-    private const float HEX_WIDTH = 1.5f;     // Distance between centers of adjacent hexes horizontally.
-    private const float HEX_HEIGHT = 1.732f;  // Full height of a hex (≈ sqrt(3)) for vertical spacing.
+    /// <summary>
+    /// Reference to the MapDataService for handling save/load operations.
+    /// </summary>
+    [Header("Save System")]
+    public MapDataService mapDataService;
+
+    private const float HEX_WIDTH = 1.5f;    // Distance between centers of adjacent hexes horizontally
+    private const float HEX_HEIGHT = 1.732f; // Full height of a hex (approx. sqrt(3)) for vertical spacing
 
     /// <summary>
-    /// Unity lifecycle method. Called automatically when the scene starts.
-    /// Triggers grid generation at runtime.
+    /// Unity lifecycle method. Initializes dependencies and triggers grid generation.
+    /// If MapDataService is not assigned, it will be created automatically.
     /// </summary>
     void Start()
     {
+        if (mapDataService == null)
+        {
+            mapDataService = FindObjectOfType<MapDataService>();
+            if (mapDataService == null)
+            {
+                GameObject serviceGO = new GameObject("MapDataService");
+                mapDataService = serviceGO.AddComponent<MapDataService>();
+            }
+        }
+
         GenerateGrid();
     }
 
@@ -98,7 +115,6 @@ public class HexGridManager : MonoBehaviour
                 var visuals = hexGO.GetComponent<HexTileVisuals>();
                 if (visuals != null && inspectorController != null)
                     visuals.SetInspector(inspectorController);
-
             }
         }
 
@@ -125,6 +141,35 @@ public class HexGridManager : MonoBehaviour
         }
     }
 
+    #region IDataPersistence Implementation
+
+    /// <summary>
+    /// Returns the current grid layout as a serializable MapData object.
+    /// </summary>
+    public MapData SaveData()
+    {
+        return mapDataService.CreateMapDataFromGrid(this);
+    }
+
+    /// <summary>
+    /// Applies the provided MapData to this grid. Returns false if data is invalid.
+    /// </summary>
+    public bool LoadData(MapData data)
+    {
+        if (data == null || data.tiles == null || data.tiles.Count == 0)
+        {
+            Debug.LogError("HexGridManager: Invalid map data.");
+            return false;
+        }
+
+        mapDataService.ApplyMapDataToGrid(data, this);
+        return true;
+    }
+
+    #endregion
+
+    #region Public API
+
     /// <summary>
     /// Immediately removes all hex tiles from the scene by destroying all child objects.
     /// Useful for regenerating or resetting the grid.
@@ -140,6 +185,7 @@ public class HexGridManager : MonoBehaviour
             DestroyImmediate(child.gameObject);
         }
     }
+
     /// <summary>
     /// Regenerates the hex grid with new dimensions, clearing the old grid first.
     /// </summary>
@@ -148,11 +194,25 @@ public class HexGridManager : MonoBehaviour
         this.width = newWidth;
         this.height = newHeight;
 
-        // Clear old grid (your method here)
         ClearGrid();
-
-        // Generate new grid
         GenerateGrid();
     }
 
+    /// <summary>
+    /// Saves the current grid to file using the MapDataService. Returns success state.
+    /// </summary>
+    public bool SaveMap(string fileName = "default_map")
+    {
+        return mapDataService?.SaveCurrentMap(this, fileName) ?? false;
+    }
+
+    /// <summary>
+    /// Loads a grid from file using the MapDataService. Returns success state.
+    /// </summary>
+    public bool LoadMap(string fileName = "default_map")
+    {
+        return mapDataService?.LoadMap(this, fileName) ?? false;
+    }
+
+    #endregion
 }

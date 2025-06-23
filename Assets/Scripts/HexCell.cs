@@ -1,12 +1,36 @@
+// Assets/Scripts/HexCell.cs
+
 using UnityEngine;
 
+/// <summary>
+/// Represents a single tile in the hex grid.
+/// Stores position, terrain type, and movement cost.
+/// </summary>
 public class HexCell : MonoBehaviour
 {
+    /// <summary>
+    /// Axial grid coordinates of the hex tile.
+    /// </summary>
     public HexCoord coord;
-    public Vector3 worldPosition;
-    public string terrainType = "Plain";  // Default type
-    public float movementCost = 1f;       // Default movement cost
 
+    /// <summary>
+    /// World-space position of the tile.
+    /// </summary>
+    public Vector3 worldPosition;
+
+    /// <summary>
+    /// Type of terrain assigned to this tile.
+    /// </summary>
+    public string terrainType = "Plain";
+
+    /// <summary>
+    /// Movement cost associated with this tile's terrain.
+    /// </summary>
+    public float movementCost = 1f;
+
+    /// <summary>
+    /// Initializes tile data and sets its world position.
+    /// </summary>
     public void Init(HexCoord coord, Vector3 position)
     {
         this.coord = coord;
@@ -15,10 +39,12 @@ public class HexCell : MonoBehaviour
         name = $"Hex {coord.q},{coord.r}";
     }
 
+    /// <summary>
+    /// Updates the terrain type and movement cost for the tile.
+    /// </summary>
     public void SetProperties(string type, float cost)
     {
         terrainType = type;
         movementCost = cost;
     }
-
 }
