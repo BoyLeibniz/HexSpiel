@@ -5,9 +5,9 @@ public class TerrainTemplate
 {
     public string name;
     public Color color;
-    public float movementCost;
+    public int movementCost;
 
-    public TerrainTemplate(string name, Color color, float cost)
+    public TerrainTemplate(string name, Color color, int cost)
     {
         this.name = name;
         this.color = color;

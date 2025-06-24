@@ -59,12 +59,12 @@ public class HexTileData
 {
     public int q, r;
     public string type;
-    public float cost;
+    public int cost;
 
     /// <summary>
     /// Creates a new tile data object from raw values.
     /// </summary>
-    public HexTileData(int q, int r, string type, float cost)
+    public HexTileData(int q, int r, string type, int cost)
     {
         this.q = q;
         this.r = r;

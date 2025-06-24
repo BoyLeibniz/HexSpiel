@@ -26,7 +26,7 @@ public class HexCell : MonoBehaviour
     /// <summary>
     /// Movement cost associated with this tile's terrain.
     /// </summary>
-    public float movementCost = 1f;
+    public int movementCost = 1;
 
     /// <summary>
     /// Initializes tile data and sets its world position.
@@ -42,7 +42,7 @@ public class HexCell : MonoBehaviour
     /// <summary>
     /// Updates the terrain type and movement cost for the tile.
     /// </summary>
-    public void SetProperties(string type, float cost)
+    public void SetProperties(string type, int cost)
     {
         terrainType = type;
         movementCost = cost;

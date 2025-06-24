@@ -26,9 +26,8 @@ public class HexInspectorController : MonoBehaviour
 
     private Label coordLabel;
     private DropdownField typeDropdown;
-    private Slider costSlider;
-    private Label costValue;
-
+    private IntegerField costField;
+    private TextField labelField;
     // Currently selected hexes and drag state
     private List<HexCell> selectedHexes = new();
     private bool isDragging = false;
@@ -36,10 +35,10 @@ public class HexInspectorController : MonoBehaviour
     // Terrain templates available to apply to tiles
     private List<TerrainTemplate> templates = new()
     {
-        new TerrainTemplate("Plain",    new Color(0.5f, 0.6f, 0.5f), 1f),
-        new TerrainTemplate("Forest",   new Color(0.2f, 0.5f, 0.2f), 2f),
-        new TerrainTemplate("Mountain", new Color(0.6f, 0.6f, 0.6f), 3f),
-        new TerrainTemplate("Water",    new Color(0.3f, 0.5f, 1f),  999f)
+        new TerrainTemplate("Plain",    new Color(0.5f, 0.6f, 0.5f), 1),
+        new TerrainTemplate("Forest",   new Color(0.2f, 0.5f, 0.2f), 2),
+        new TerrainTemplate("Mountain", new Color(0.6f, 0.6f, 0.6f), 3),
+        new TerrainTemplate("Water",    new Color(0.3f, 0.5f, 1f),  999)
     };
 
     private void OnEnable()
@@ -117,29 +116,23 @@ public class HexInspectorController : MonoBehaviour
         // Bind hex properties controls
         coordLabel = root.Q<Label>("coordLabel");
         typeDropdown = root.Q<DropdownField>("typeDropdown");
-        costSlider = root.Q<Slider>("costSlider");
-        costValue = root.Q<Label>("costValue");
+        costField = root.Q<IntegerField>("costField");
+        labelField = root.Q<TextField>("labelField");
+        costField.value = 1;
+        labelField.value = "";
 
         // Populate dropdown and default selection
         typeDropdown.choices = templates.Select(t => t.name).ToList();
         typeDropdown.SetValueWithoutNotify(templates[0].name);
-        costSlider.SetValueWithoutNotify(templates[0].movementCost);
-        costValue.text = templates[0].movementCost.ToString("0");
+        costField.SetValueWithoutNotify(templates[0].movementCost);
 
         // When dropdown changes, update cost + highlight selection
         typeDropdown.RegisterValueChangedCallback(evt =>
         {
             TerrainTemplate template = templates.FirstOrDefault(t => t.name == evt.newValue);
-            costSlider.SetValueWithoutNotify(template.movementCost);
-            costValue.text = template.movementCost.ToString("0");
+            costField.SetValueWithoutNotify(template.movementCost);
             foreach (var cell in selectedHexes)
                 cell.GetComponent<HexTileVisuals>()?.SetSelected(true);
-        });
-
-        // Update cost value when slider changes
-        costSlider.RegisterValueChangedCallback(evt =>
-        {
-            costValue.text = evt.newValue.ToString("0");
         });
 
         // Apply terrain properties to all selected tiles
@@ -185,12 +178,11 @@ public class HexInspectorController : MonoBehaviour
         gridHeightField.value = height;
     }
 
-    public void UpdateSelectedHex(Vector2Int coords, string type, float cost)
+    public void UpdateSelectedHex(Vector2Int coords, string type, int cost)
     {
         coordLabel.text = $"({coords.x}, {coords.y})";
         typeDropdown.value = type;
-        costSlider.value = cost;
-        costValue.text = cost.ToString("0");
+        costField.value = cost;
     }
 
     public void AddToSelection(HexCell cell)
@@ -251,8 +243,7 @@ public class HexInspectorController : MonoBehaviour
         {
             coordLabel.text = "No hex selected";
             typeDropdown.SetValueWithoutNotify(templates[0].name);
-            costSlider.SetValueWithoutNotify(templates[0].movementCost);
-            costValue.text = templates[0].movementCost.ToString("0");
+            costField.SetValueWithoutNotify(templates[0].movementCost);
             return;
         }
 
@@ -261,8 +252,7 @@ public class HexInspectorController : MonoBehaviour
             var cell = selectedHexes[0];
             coordLabel.text = $"({cell.coord.q}, {cell.coord.r})";
             typeDropdown.SetValueWithoutNotify(cell.terrainType);
-            costSlider.SetValueWithoutNotify(cell.movementCost);
-            costValue.text = cell.movementCost.ToString("0");
+            costField.SetValueWithoutNotify(cell.movementCost);
         }
         else
         {
@@ -271,8 +261,7 @@ public class HexInspectorController : MonoBehaviour
             var firstType = selectedHexes[0].terrainType;
             bool allSameType = selectedHexes.All(h => h.terrainType == firstType);
             typeDropdown.SetValueWithoutNotify(allSameType ? firstType : "-- Mixed --");
-            costSlider.SetValueWithoutNotify(allSameType ? selectedHexes[0].movementCost : 0f);
-            costValue.text = allSameType ? selectedHexes[0].movementCost.ToString("0") : "";
+            costField.SetValueWithoutNotify(allSameType ? selectedHexes[0].movementCost : 0);
         }
     }
 

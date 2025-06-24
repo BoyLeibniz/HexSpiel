@@ -28,13 +28,25 @@
         <ui:VisualElement class="divider"/>
 
         <ui:Label text="Hex Settings" class="header" />
-        <ui:Label text="Coordinates" />
-        <ui:Label name="coordLabel" text="(x, z)" class="value-label" />
-        <ui:Label text="Hex Type:" />
+
+        <ui:VisualElement class="field-row">
+            <ui:Label text="Coordinates" class="field-label" />
+            <ui:Label name="coordLabel" text="(x, z)" class="value-label" />
+        </ui:VisualElement>
+
+        <ui:Label text="Type" />
         <ui:DropdownField name="typeDropdown" />
-        <ui:Label text="Movement Cost:" />
-        <ui:Slider name="costSlider" highValue="5" lowValue="0" value="1" />
-        <ui:Label name="costValue" text="1" class="value-label" />
+
+        <ui:VisualElement class="field-row">
+            <ui:Label text="Moves" class="field-label" />
+            <ui:IntegerField name="costField" />
+        </ui:VisualElement>
+
+        <ui:VisualElement class="field-row">
+            <ui:Label text="Label" class="field-label" />
+            <ui:TextField name="labelField" />
+        </ui:VisualElement>
+
         <ui:Button name="applyButton" text="Apply" />
 
     </ui:VisualElement>
