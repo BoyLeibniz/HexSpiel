@@ -24,6 +24,7 @@ Assets/
   Materials/         # Tile materials, overlays
   SaveSystem/        # Save/load scaffolding (IDataPersistence, MapData)
 ProjectSettings/     # Unity config files
+Samples/             # Example Data files
 ```
 
 ## 🛠️ Getting Started
@@ -47,6 +48,16 @@ Otherwise:
    ```bash
    code .
    ```
+
+## 🧪 Testing
+
+A sample map in the original map format has been provided (Samples/old_version.json).
+Simply copy it to your system's Unity Data folder - the location is presented in the Console 
+immediately on Play of the scene, e.g.;
+```
+[HexGridManager] Default Data Path (Application.persistentDataPath): %APPDATA%/DefaultCompany/HexSpiel
+```
+...and you will be able to load the data via the UI using Map Name "old version".
 
 ## ⌨️ Keyboard Shortcuts
 
