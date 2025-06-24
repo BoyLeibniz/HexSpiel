@@ -5,13 +5,18 @@
         <ui:VisualElement class="grid-settings">
             <ui:Label text="Map Settings" class="header" />
 
+             <ui:VisualElement class="field-row">
+                <ui:Label text="Name" class="field-label" />
+                <ui:TextField name="mapNameField"/>
+           </ui:VisualElement>
+
             <ui:VisualElement class="field-row">
-                <ui:Label text="Width:" class="field-label" />
+                <ui:Label text="Width" class="field-label" />
                 <ui:IntegerField name="gridWidthField"/>
             </ui:VisualElement>
 
             <ui:VisualElement class="field-row">
-                <ui:Label text="Height:" class="field-label" />
+                <ui:Label text="Height" class="field-label" />
                 <ui:IntegerField name="gridHeightField" />
             </ui:VisualElement>
 
@@ -23,7 +28,7 @@
         <ui:VisualElement class="divider"/>
 
         <ui:Label text="Hex Settings" class="header" />
-        <ui:Label text="Coordinates:" />
+        <ui:Label text="Coordinates" />
         <ui:Label name="coordLabel" text="(x, z)" class="value-label" />
         <ui:Label text="Hex Type:" />
         <ui:DropdownField name="typeDropdown" />

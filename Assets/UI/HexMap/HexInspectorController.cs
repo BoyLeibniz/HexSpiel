@@ -16,6 +16,7 @@ public class HexInspectorController : MonoBehaviour
     public DataPersistenceManager dataPersistenceManager;
 
     // UI element references
+    private TextField mapNameField;
     private IntegerField gridWidthField;
     private IntegerField gridHeightField;
     private Button saveButton;
@@ -49,6 +50,16 @@ public class HexInspectorController : MonoBehaviour
         root.Focus();
         root.RegisterCallback<KeyDownEvent>(OnKeyDown, TrickleDown.TrickleDown);
 
+        // Setup map name input field
+        mapNameField = root.Q<TextField>("mapNameField");
+        string currentName = dataPersistenceManager != null
+            ? dataPersistenceManager.GetFileName()
+            : "default_map";
+        // Display as blank if it's "default_map"
+        mapNameField.SetValueWithoutNotify(
+            currentName == "default_map" ? "" : currentName.Replace("_", " ")
+        );
+
         // Setup grid size input fields
         gridWidthField = root.Q<IntegerField>("gridWidthField");
         gridHeightField = root.Q<IntegerField>("gridHeightField");
@@ -59,15 +70,28 @@ public class HexInspectorController : MonoBehaviour
         saveButton = root.Q<Button>("saveButton");
         saveButton.clicked += () =>
         {
+            string rawName = mapNameField?.value?.Trim();
+            string safeName = string.IsNullOrEmpty(rawName)
+                ? "default_map"
+                : rawName.Replace(" ", "_");
+
+            dataPersistenceManager?.SetFileName(safeName);
+
             bool success = dataPersistenceManager.SaveGame();
-            Debug.Log(success ? "Map saved successfully!" : "Failed to save map!");
+            Debug.Log(success ? $"Map saved as '{safeName}'" : "Failed to save map!");
         };
 
         // Setup Load button
         loadButton = root.Q<Button>("loadButton");
         loadButton.clicked += () =>
         {
-            bool success = dataPersistenceManager.LoadGame();
+            string rawName = mapNameField?.value?.Trim();
+            string safeName = string.IsNullOrEmpty(rawName)
+                ? "default_map"
+                : rawName.Replace(" ", "_");
+
+            bool success = dataPersistenceManager.LoadGame(safeName);
+
             if (success)
             {
                 Debug.Log("Map loaded successfully!");

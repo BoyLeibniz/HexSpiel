@@ -16,6 +16,13 @@ public class DataPersistenceManager : MonoBehaviour
     private ISaveSystem saveSystem;
     private IDataPersistence dataPersistenceTarget;
 
+    public string GetFileName() => fileName;
+
+    public void SetFileName(string name)
+    {
+        fileName = name;
+    }
+
     void Awake()
     {
         saveSystem = new JsonSaveSystem();
@@ -47,13 +54,25 @@ public class DataPersistenceManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Loads MapData from disk and passes it to the active IDataPersistence implementer.
+    /// Loads default MapData from disk and passes it to the active IDataPersistence implementer.
     /// </summary>
     public bool LoadGame()
     {
         MapData data = saveSystem.LoadMap(fileName);
         if (data == null) return false;
 
+        return dataPersistenceTarget?.LoadData(data) ?? false;
+    }
+
+    /// <summary>
+    /// Loads the named MapData from disk and passes it to the active IDataPersistence implementer.
+    /// </summary>
+    public bool LoadGame(string name)
+    {
+        MapData data = saveSystem.LoadMap(name);
+        if (data == null) return false;
+
+        SetFileName(name); // Keep filename in sync for future saves
         return dataPersistenceTarget?.LoadData(data) ?? false;
     }
 }
