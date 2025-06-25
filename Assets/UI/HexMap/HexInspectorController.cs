@@ -277,7 +277,7 @@ public class HexInspectorController : MonoBehaviour
 
             var firstLabel = selectedHexes[0].label ?? "";
             bool allSameLabel = selectedHexes.All(h => (h.label ?? "") == firstLabel);
-            labelField.SetValueWithoutNotify(allSameLabel ? firstLabel : "-- Mixed --"); 
+            labelField.SetValueWithoutNotify(allSameLabel ? firstLabel : "-- Mixed --");
         }
     }
 
@@ -326,4 +326,5 @@ public class HexInspectorController : MonoBehaviour
         var template = templates.FirstOrDefault(t => t.name == selectedType);
         return template?.color ?? new Color(0.5f, 0.5f, 0.5f);  // Default gray
     }
+    
 }

@@ -51,13 +51,27 @@ Otherwise:
 
 ## 🧪 Testing
 
-A sample map in the original map format has been provided (Samples/old_version.json).
-Simply copy it to your system's Unity Data folder - the location is presented in the Console 
+### Loading and Saving
+
+Maps are saved and loaded from your system's Unity Data folder - the location is presented in the Console 
 immediately on Play of the scene, e.g.;
 ```
 [HexGridManager] Default Data Path (Application.persistentDataPath): %APPDATA%/DefaultCompany/HexSpiel
 ```
-...and you will be able to load the data via the UI using Map Name "old version".
+Maps can be loaded via the UI by entering a Map Name. Spaces are converted to underscores when saving, and restored when loading.
+If no name is provided in the UI a map `default_map.json` will be saved or loaded (if present).
+A sample map in the original map format has been provided (Samples/hexmap_v1.json).
+Simply copy it to your system's Unity Data folder if needed.
+
+### Current Priority: 
+
+[Issue #001](#🐞-outstanding-issues)
+The failure of hex deselection with mouse-click.
+
+Steps to reproduce; 
+- Load or create a map and select one or more hexes
+- Click on one of the already-selected hexes with the mouse
+- Desired behaviour; it should be de-selected 
 
 ## ⌨️ Keyboard Shortcuts
 
@@ -68,18 +82,12 @@ While running the project, the following shortcuts are available:
 
 These are intended to assist during editing and testing phases.
 
-## 🤝 Contributing
-
-* Use XML doc comments for all public scripts
-* Avoid committing `.vscode/`, `Library/`, and build artifacts
-* Keep commits descriptive and atomic
-
 ## 🗽 Roadmap (Early Stage)
 
 * [x] Basic grid generation
 * [x] Mat placement and Camera Control
 * [x] Hex selection and property editing
-* [ ] Map Save and Load
+* [x] Map Save and Load
 * [ ] Tile overlays
 * [ ] Unit Pattern maintenance
 * [ ] Army List maintenance
@@ -88,6 +96,22 @@ These are intended to assist during editing and testing phases.
 * [ ] Unit placement
 * [ ] Turn system
 * [ ] AI player logic
+
+## 🤝 Contributing
+
+* Use XML doc comments for all public scripts
+* Avoid committing `.vscode/`, `Library/`, and build artifacts
+* Keep commits descriptive and atomic
+
+## 🐞 Outstanding Issues
+
+| ID   | Description                                                                 | Status     | Workaround / Notes                                               |
+|------|-----------------------------------------------------------------------------|------------|------------------------------------------------------------------|
+| #001 | Clicking a selected hex does not always deselect it                        | 🧠 Investigating | Likely due to conflict between click and drag selection logic |
+| #002 | Glow applied on Hex selection is not scaling, lighter colors too high      | ⏳ Open     | Visual quirk only; does not affect save/load behavior           |
+| #003 | Changing UI Hex Type after selection updates the color, but new selections revert | ✅ Confirmed | Modify to always respect the current UI Type selection |
+
+> **Status legend**: ✅ Confirmed • 🧠 Investigating • ⏳ Open • 🛠 In Progress • 🔁 Regression • 🎯 Resolved • ❓ Needs Review • 🚫 Won’t Fix
 
 ---
 
