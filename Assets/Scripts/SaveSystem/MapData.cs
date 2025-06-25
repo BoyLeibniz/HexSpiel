@@ -65,7 +65,7 @@ public class HexTileData
     /// <summary>
     /// Creates a new tile data object from raw values.
     /// </summary>
-    public HexTileData(int q, int r, string type, int cost, string? label = null)
+    public HexTileData(int q, int r, string type, int cost, string label)
     {
         this.q = q;
         this.r = r;
