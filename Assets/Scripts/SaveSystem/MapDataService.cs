@@ -35,16 +35,10 @@ public class MapDataService : MonoBehaviour
             HexCell cell = child.GetComponent<HexCell>();
             if (cell != null)
             {
-                HexTileData tileData = new HexTileData(
-                    cell.coord.q,
-                    cell.coord.r,
-                    cell.terrainType,
-                    cell.movementCost
-                );
-                mapData.tiles.Add(tileData);
+                mapData.tiles.Add(HexTileConverter.ToData(cell));
             }
         }
-
+        mapData.version = 2;
         return mapData;
     }
 
@@ -75,7 +69,7 @@ public class MapDataService : MonoBehaviour
                 string key = $"{cell.coord.q},{cell.coord.r}";
                 if (tileDataLookup.TryGetValue(key, out HexTileData tileData))
                 {
-                    cell.SetProperties(tileData.type, tileData.cost);
+                    HexTileConverter.ApplyDataToCell(tileData, cell);
 
                     HexTileVisuals visuals = cell.GetComponent<HexTileVisuals>();
                     if (visuals != null)
@@ -87,7 +81,7 @@ public class MapDataService : MonoBehaviour
                 }
             }
         }
-
+        
         Debug.Log($"Applied map data: {mapData.width}x{mapData.height} grid with {mapData.tiles.Count} tiles");
     }
 

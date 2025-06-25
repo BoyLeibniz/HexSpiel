@@ -112,7 +112,7 @@ public class HexTileVisuals : MonoBehaviour
         if (inspectorController == null)
             return;
 
-        Color current = inspectorController.GetCurrentTerrainColor();
+        Color current = inspectorController.GetSelectedTerrainColor();
 
         if (isSelected)
         {

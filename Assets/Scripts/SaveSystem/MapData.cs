@@ -60,16 +60,18 @@ public class HexTileData
     public int q, r;
     public string type;
     public int cost;
+    public string label = ""; // New field, default for backward compatibility
 
     /// <summary>
     /// Creates a new tile data object from raw values.
     /// </summary>
-    public HexTileData(int q, int r, string type, int cost)
+    public HexTileData(int q, int r, string type, int cost, string? label = null)
     {
         this.q = q;
         this.r = r;
         this.type = type;
         this.cost = cost;
+        this.label = label ?? "";
     }
 
     /// <summary>

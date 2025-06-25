@@ -143,9 +143,13 @@ public class HexInspectorController : MonoBehaviour
             TerrainTemplate template = templates.FirstOrDefault(t => t.name == selectedType);
             if (template == null) return;
 
+            string rawLabel = labelField.value ?? "";
+            bool applyLabel = rawLabel != "-- Mixed --";
             foreach (var cell in selectedHexes)
             {
                 cell.SetProperties(template.name, template.movementCost);
+                if (applyLabel)
+                    cell.label = rawLabel;
                 var vis = cell.GetComponent<HexTileVisuals>();
                 if (vis != null)
                     vis.baseColor = template.color;
@@ -205,6 +209,11 @@ public class HexInspectorController : MonoBehaviour
 
     public void ClearSelection()
     {
+        // Clean up any destroyed cells before processing
+        selectedHexes = selectedHexes
+            .Where(cell => cell != null)
+            .ToList();
+
         foreach (var cell in selectedHexes)
         {
             var vis = cell.GetComponent<HexTileVisuals>();
@@ -241,9 +250,10 @@ public class HexInspectorController : MonoBehaviour
     {
         if (selectedHexes.Count == 0)
         {
-            coordLabel.text = "No hex selected";
+            coordLabel.text = ""; // No hex selected
             typeDropdown.SetValueWithoutNotify(templates[0].name);
             costField.SetValueWithoutNotify(templates[0].movementCost);
+            labelField.SetValueWithoutNotify("");
             return;
         }
 
@@ -253,6 +263,7 @@ public class HexInspectorController : MonoBehaviour
             coordLabel.text = $"({cell.coord.q}, {cell.coord.r})";
             typeDropdown.SetValueWithoutNotify(cell.terrainType);
             costField.SetValueWithoutNotify(cell.movementCost);
+            labelField.SetValueWithoutNotify(cell.label ?? "");
         }
         else
         {
@@ -261,7 +272,12 @@ public class HexInspectorController : MonoBehaviour
             var firstType = selectedHexes[0].terrainType;
             bool allSameType = selectedHexes.All(h => h.terrainType == firstType);
             typeDropdown.SetValueWithoutNotify(allSameType ? firstType : "-- Mixed --");
+
             costField.SetValueWithoutNotify(allSameType ? selectedHexes[0].movementCost : 0);
+
+            var firstLabel = selectedHexes[0].label ?? "";
+            bool allSameLabel = selectedHexes.All(h => (h.label ?? "") == firstLabel);
+            labelField.SetValueWithoutNotify(allSameLabel ? firstLabel : "-- Mixed --"); 
         }
     }
 
@@ -299,13 +315,15 @@ public class HexInspectorController : MonoBehaviour
         }
     }
 
-    public Color GetCurrentTerrainColor()
+    public Color GetSelectedTerrainColor()
     {
         var selectedType = typeDropdown?.value;
         if (string.IsNullOrEmpty(selectedType) || selectedType == "-- Mixed --")
-            return Color.white;
+        {
+            selectedType = selectedHexes[0].terrainType;  // First tile selected 
+        }
 
         var template = templates.FirstOrDefault(t => t.name == selectedType);
-        return template?.color ?? Color.white;
+        return template?.color ?? new Color(0.5f, 0.5f, 0.5f);  // Default gray
     }
 }

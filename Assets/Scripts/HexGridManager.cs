@@ -56,6 +56,7 @@ public class HexGridManager : MonoBehaviour, IDataPersistence
     /// </summary>
     void Start()
     {
+        Debug.Log($"[HexGridManager] Default Data Path (Application.persistentDataPath): {Application.persistentDataPath}");
         if (mapDataService == null)
         {
             mapDataService = FindObjectOfType<MapDataService>();

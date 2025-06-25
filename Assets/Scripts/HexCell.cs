@@ -29,6 +29,11 @@ public class HexCell : MonoBehaviour
     public int movementCost = 1;
 
     /// <summary>
+    /// Optional label for this tile.
+    /// </summary>
+    public string label = "";
+
+    /// <summary>
     /// Initializes tile data and sets its world position.
     /// </summary>
     public void Init(HexCoord coord, Vector3 position)
