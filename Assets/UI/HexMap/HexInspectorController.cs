@@ -176,12 +176,18 @@ public class HexInspectorController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Update UI values with the width and height of the map grid in hexes.
+    /// </summary>
     public void UpdateGridUI(int width, int height)
     {
         gridWidthField.value = width;
         gridHeightField.value = height;
     }
 
+    /// <summary>
+    /// Update UI values with basic hex properties.
+    /// </summary>
     public void UpdateSelectedHex(Vector2Int coords, string type, int cost)
     {
         coordLabel.text = $"({coords.x}, {coords.y})";
@@ -189,6 +195,9 @@ public class HexInspectorController : MonoBehaviour
         costField.value = cost;
     }
 
+    /// <summary>
+    /// Add a hex to the selection list without duplication.
+    /// </summary>
     public void AddToSelection(HexCell cell)
     {
         if (!selectedHexes.Contains(cell))
@@ -198,6 +207,9 @@ public class HexInspectorController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Remove a hex safely from the selection list.
+    /// </summary>
     public void RemoveFromSelection(HexCell cell)
     {
         if (selectedHexes.Contains(cell))
@@ -207,6 +219,9 @@ public class HexInspectorController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Clear the entire hex selection list.
+    /// </summary>
     public void ClearSelection()
     {
         // Clean up any destroyed cells before processing
@@ -226,6 +241,9 @@ public class HexInspectorController : MonoBehaviour
         UpdateSelectionUI();
     }
 
+    /// <summary>
+    /// Add all available hexes to the selection list.
+    /// </summary>
     public void SelectAllHexes()
     {
         selectedHexes.Clear();
@@ -246,6 +264,7 @@ public class HexInspectorController : MonoBehaviour
         UpdateSelectionUI();
     }
 
+    // Refreshes the UI to reflect the current selection state
     private void UpdateSelectionUI()
     {
         if (selectedHexes.Count == 0)
@@ -281,12 +300,9 @@ public class HexInspectorController : MonoBehaviour
         }
     }
 
+    // Handle keyboard input while the UI has focus
     private void Update()
     {
-        if (Input.GetMouseButtonDown(0)) isDragging = true;
-        if (Input.GetMouseButtonUp(0)) isDragging = false;
-        if (Input.GetMouseButton(0)) TrySelectHoveredTile();
-
         if ((Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl)) &&
             Input.GetKeyDown(KeyCode.A))
         {
@@ -299,22 +315,9 @@ public class HexInspectorController : MonoBehaviour
         }
     }
 
-    private void TrySelectHoveredTile()
-    {
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(ray, out RaycastHit hit))
-        {
-            HexCell cell = hit.collider.GetComponent<HexCell>();
-            if (cell != null && !selectedHexes.Contains(cell))
-            {
-                selectedHexes.Add(cell);
-                var vis = cell.GetComponent<HexTileVisuals>();
-                if (vis != null)
-                    vis.SetSelected(true);
-            }
-        }
-    }
-
+    /// <summary>
+    /// Returns the color of the hex Type currently selected in the UI.
+    /// </summary>
     public Color GetSelectedTerrainColor()
     {
         var selectedType = typeDropdown?.value;

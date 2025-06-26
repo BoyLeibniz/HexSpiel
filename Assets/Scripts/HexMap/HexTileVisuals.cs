@@ -44,6 +44,12 @@ public class HexTileVisuals : MonoBehaviour
 
     void OnMouseEnter()
     {
+        // If dragging, add to controller selection
+        if (Input.GetMouseButton(0) && TryGetComponent<HexCell>(out var cell) && inspectorController != null)
+        {
+            isSelected = true;
+            inspectorController.AddToSelection(cell);
+        }
         isHovered = true;
         UpdateVisualState();
     }

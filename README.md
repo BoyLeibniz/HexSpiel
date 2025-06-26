@@ -73,6 +73,11 @@ Steps to reproduce;
 - Click on one of the already-selected hexes with the mouse
 - Desired behaviour; it should be de-selected 
 
+Suggested solution;
+- Update `HexTileVisuals.OnMouseEnter()` to include `AddToSelection()` logic
+- Remove all expensive drag logic from `HexInspectorController`
+- No more triple mouse-polling or raycasting each frame!
+
 ## ⌨️ Keyboard Shortcuts
 
 While running the project, the following shortcuts are available:
@@ -107,7 +112,7 @@ These are intended to assist during editing and testing phases.
 
 | ID   | Description                                                                 | Status     | Workaround / Notes                                               |
 |------|-----------------------------------------------------------------------------|------------|------------------------------------------------------------------|
-| #001 | Clicking a selected hex does not always deselect it                        | 🧠 Investigating | Likely due to conflict between click and drag selection logic |
+| #001 | Clicking a selected hex does not always deselect it                        | 🛠 In Progress | Simply add `AddToSelection()` logic to `HexTileVisuals.OnMouseEnter()` |
 | #002 | Glow applied on Hex selection is not scaling, lighter colors too high      | ⏳ Open     | Visual quirk only; does not affect save/load behavior           |
 | #003 | Changing UI Hex Type after selection updates the color, but new selections revert | ✅ Confirmed | Modify to always respect the current UI Type selection |
 
