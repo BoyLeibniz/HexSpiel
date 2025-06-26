@@ -65,18 +65,16 @@ Simply copy it to your system's Unity Data folder if needed.
 
 ### Current Priority: 
 
-[Issue #001](#🐞-outstanding-issues)
-The failure of hex deselection with mouse-click.
+Tooltip presentation - show the new `HexCell.label` property as a floating tooltip in the scene.
 
-Steps to reproduce; 
-- Load or create a map and select one or more hexes
-- Click on one of the already-selected hexes with the mouse
-- Desired behaviour; it should be de-selected 
+Required behaviour; 
+- Tooltips should be presented only over tiles that have a value
+- They should of readable size without being so large as to obscure neighbouring tooltips
+- The tooltips should always present towards the camera billboard-style, even on camera movement
+- The tooltips should be toggled on and off via a keyboard shortcut (e.g. ctrl-T)
+- Tooltips should be presented and destroyed appropriately as maps are loaded, edited and destroyed (reset)
+- The code should be extensible for additional future properties
 
-Suggested solution;
-- Update `HexTileVisuals.OnMouseEnter()` to include `AddToSelection()` logic
-- Remove all expensive drag logic from `HexInspectorController`
-- No more triple mouse-polling or raycasting each frame!
 
 ## ⌨️ Keyboard Shortcuts
 

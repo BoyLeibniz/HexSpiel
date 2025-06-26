@@ -47,7 +47,6 @@ public class HexInspectorController : MonoBehaviour
         var root = uiDocument.rootVisualElement;
         root.focusable = true;
         root.Focus();
-        root.RegisterCallback<KeyDownEvent>(OnKeyDown, TrickleDown.TrickleDown);
 
         // Setup map name input field
         mapNameField = root.Q<TextField>("mapNameField");
@@ -156,24 +155,6 @@ public class HexInspectorController : MonoBehaviour
             }
             ClearSelection();
         };
-    }
-
-    // Handles keyboard shortcuts while the UI document is focused
-    private void OnKeyDown(KeyDownEvent evt)
-    {
-        // ESC clears current selection
-        if (evt.keyCode == KeyCode.Escape)
-        {
-            ClearSelection();
-            evt.StopPropagation();
-        }
-
-        // Ctrl+A selects all hexes
-        if (evt.keyCode == KeyCode.A && (evt.ctrlKey || evt.commandKey))
-        {
-            SelectAllHexes();
-            evt.StopPropagation();
-        }
     }
 
     /// <summary>
@@ -307,11 +288,13 @@ public class HexInspectorController : MonoBehaviour
             Input.GetKeyDown(KeyCode.A))
         {
             SelectAllHexes();
+            Debug.Log("[HexInspectorController.UpdateSelectionUI.Update] Ctrl+A pressed - All hexes selected.");
         }
 
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             ClearSelection();
+            Debug.Log("[HexInspectorController.UpdateSelectionUI.Update] Escape pressed - All hexes deselected.");
         }
     }
 
