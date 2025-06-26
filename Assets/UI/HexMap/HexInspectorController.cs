@@ -30,7 +30,6 @@ public class HexInspectorController : MonoBehaviour
     private TextField labelField;
     // Currently selected hexes and drag state
     private List<HexCell> selectedHexes = new();
-    private bool isDragging = false;
 
     // Terrain templates available to apply to tiles
     private List<TerrainTemplate> templates = new()
@@ -152,6 +151,12 @@ public class HexInspectorController : MonoBehaviour
                 var vis = cell.GetComponent<HexTileVisuals>();
                 if (vis != null)
                     vis.baseColor = template.color;
+
+                // Update tooltip for this cell
+                if (hexGridManager.tooltipManager != null)
+                {
+                    hexGridManager.tooltipManager.UpdateCellTooltip(cell);
+                }
             }
             ClearSelection();
         };

@@ -51,22 +51,18 @@ public class HexGridManager : MonoBehaviour, IDataPersistence
     private const float HEX_HEIGHT = 1.732f; // Full height of a hex (approx. sqrt(3)) for vertical spacing
 
     /// <summary>
+    /// Reference to the tooltip manager for handling label display.
+    /// </summary>
+    [Header("Tooltip System")]
+    public HexTooltipManager tooltipManager;
+
+    /// <summary>
     /// Unity lifecycle method. Initializes dependencies and triggers grid generation.
     /// If MapDataService is not assigned, it will be created automatically.
     /// </summary>
     void Start()
     {
         Debug.Log($"[HexGridManager] Default Data Path (Application.persistentDataPath): {Application.persistentDataPath}");
-        if (mapDataService == null)
-        {
-            mapDataService = FindObjectOfType<MapDataService>();
-            if (mapDataService == null)
-            {
-                GameObject serviceGO = new GameObject("MapDataService");
-                mapDataService = serviceGO.AddComponent<MapDataService>();
-            }
-        }
-
         GenerateGrid();
     }
 
@@ -164,6 +160,13 @@ public class HexGridManager : MonoBehaviour, IDataPersistence
         }
 
         mapDataService.ApplyMapDataToGrid(data, this);
+
+        // Refresh tooltips after loading
+        if (tooltipManager != null)
+        {
+            tooltipManager.RefreshAllTooltips();
+        }
+
         return true;
     }
 
@@ -177,6 +180,12 @@ public class HexGridManager : MonoBehaviour, IDataPersistence
     /// </summary>
     public void ClearGrid()
     {
+        // Clear tooltips before destroying grid
+        if (tooltipManager != null)
+        {
+            tooltipManager.ClearAllTooltips();
+        }
+
         for (int i = transform.childCount - 1; i >= 0; i--)
         {
             Transform child = transform.GetChild(i);
@@ -197,6 +206,12 @@ public class HexGridManager : MonoBehaviour, IDataPersistence
 
         ClearGrid();
         GenerateGrid();
+
+        // Refresh tooltips after regeneration
+        if (tooltipManager != null)
+        {
+            tooltipManager.RefreshAllTooltips();
+        }
     }
 
     /// <summary>
