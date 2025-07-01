@@ -41,6 +41,8 @@ Otherwise:
    git clone https://github.com/BoyLeibniz/HexSpiel.git
    ```
 
+Then:
+
 2. Open in **Unity Hub** → Add project → Select folder
 
 3. (Optional) Open in **VS Code** if you’re editing scripts:
@@ -48,6 +50,15 @@ Otherwise:
    ```bash
    code .
    ```
+
+## 📦 Required Unity Packages
+
+The project uses the following packages that are usually present with most installations, but
+if starting from scratch ensure the following are installed via Unity Package Manager:
+
+- `UI Toolkit` (`com.unity.ui`)
+- `TextMeshPro` (`com.unity.textmeshpro`)
+
 
 ## 🧪 Testing
 

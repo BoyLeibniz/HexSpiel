@@ -10,7 +10,6 @@
     position: absolute;
     left: 0;
     top: 0;
-
     padding: 10px;
     background-color: #2D2D2D;
     color: #E0E0E0 ;
@@ -41,14 +40,12 @@
 }
 
 .map-name-container {
-    flex-direction: row;
     height: 40px;
     margin-bottom: 8px;
     overflow: visible;
 }
 
 .combo-box-field {
-    flex-direction: column;
     width: 100%;
     height: 100%;
     position: relative;
@@ -67,6 +64,7 @@
 
 .combo-box-input {
     flex-grow: 1;
+    flex-direction: column;
     height: 100%;
     min-width: 0; /* Allows proper shrink inside flexbox */
     max-width: 100%; /* Ensures it doesn't overflow */
@@ -87,11 +85,9 @@
     z-index: 9999; /* Ensures it appears above other elements */
     left: 0;
     right: 0;
-
     background-color: white;
     border: 1px solid #999;
     padding: 2px;
-
     max-height: 200px;
     overflow-y: auto;
 }
@@ -131,8 +127,8 @@
 
 .hex-field {
     flex-grow: 1;
-    min-width: 0;   /* 🔑 Allows proper shrink inside flexbox */
-    width: 71%; /* Ensures it doesn't overflow */
+    flex-direction: column;
+    min-width: 0;   /* Allows proper shrink inside flexbox */
 }
 
 TextField {
@@ -143,7 +139,6 @@ TextField {
 IntegerField {
     color: #2D2D2D; /* input field font color */
     min-width: 0;
-    max-width: 75%; 
 }
 
 Button {

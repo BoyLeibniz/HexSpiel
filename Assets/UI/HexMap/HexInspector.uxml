@@ -12,12 +12,12 @@
 
             <ui:VisualElement class="field-row">
                 <ui:Label text="Width" class="field-label" />
-                <ui:IntegerField name="gridWidthField"/>
+                <ui:IntegerField name="gridWidthField" class="hex-field" />
             </ui:VisualElement>
 
             <ui:VisualElement class="field-row">
                 <ui:Label text="Height" class="field-label" />
-                <ui:IntegerField name="gridHeightField" />
+                <ui:IntegerField name="gridHeightField" class="hex-field" />
             </ui:VisualElement>
 
             <ui:Button name="saveButton" text="Save" />
@@ -39,12 +39,12 @@
 
         <ui:VisualElement class="field-row">
             <ui:Label text="Moves" class="field-label" />
-            <ui:IntegerField name="costField" />
+            <ui:IntegerField name="costField" class="hex-field" />
         </ui:VisualElement>
 
         <ui:VisualElement class="field-row">
             <ui:Label text="Label" class="field-label" />
-            <ui:TextField name="labelField" class="hex-field"/>
+            <ui:TextField name="labelField" class="hex-field" />
         </ui:VisualElement>
 
         <ui:Button name="applyButton" text="Apply" />
