@@ -1,4 +1,4 @@
-// Assets/Scripts/HexCell.cs
+// Assets/Scripts/HexMap/HexCell.cs
 
 using UnityEngine;
 

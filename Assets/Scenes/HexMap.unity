@@ -602,6 +602,55 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e455f06244de3b4e8a0a2a1f52a4126, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &1004667698
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1004667700}
+  - component: {fileID: 1004667699}
+  m_Layer: 0
+  m_Name: HexTooltipManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1004667699
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1004667698}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2ca39c7c6636ecd41b183a72a1878fe4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gridManager: {fileID: 1918321940}
+  tooltipPrefab: {fileID: 6997373512831491457, guid: 104fc8505a3b56840806550b2c820d2a,
+    type: 3}
+  toggleKey: 116
+  requireCtrlModifier: 1
+--- !u!4 &1004667700
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1004667698}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1.6722775, y: 3.9291096, z: 1.5130968}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1728070094
 GameObject:
   m_ObjectHideFlags: 0
@@ -611,8 +660,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1728070097}
-  - component: {fileID: 1728070096}
   - component: {fileID: 1728070095}
+  - component: {fileID: 1728070096}
   m_Layer: 0
   m_Name: HexUIManager
   m_TagString: Untagged
@@ -635,6 +684,7 @@ MonoBehaviour:
   uiDocument: {fileID: 1728070096}
   hexGridManager: {fileID: 1918321940}
   dataPersistenceManager: {fileID: 680761820}
+  mapDataService: {fileID: 1927603065}
 --- !u!114 &1728070096
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -705,7 +755,8 @@ MonoBehaviour:
     type: 3}
   mat: {fileID: 723813250}
   inspectorController: {fileID: 1728070095}
-  mapDataService: {fileID: 0}
+  mapDataService: {fileID: 1927603065}
+  tooltipManager: {fileID: 1004667699}
 --- !u!4 &1918321941
 Transform:
   m_ObjectHideFlags: 0
@@ -772,6 +823,50 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1 &1927603064
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1927603066}
+  - component: {fileID: 1927603065}
+  m_Layer: 0
+  m_Name: MapDataService
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1927603065
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1927603064}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3b7af74c498fd294898b109413b334d7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &1927603066
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1927603064}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1.6722775, y: 3.9291096, z: 1.5130968}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -782,3 +877,5 @@ SceneRoots:
   - {fileID: 1918321941}
   - {fileID: 1728070097}
   - {fileID: 680761819}
+  - {fileID: 1004667700}
+  - {fileID: 1927603066}

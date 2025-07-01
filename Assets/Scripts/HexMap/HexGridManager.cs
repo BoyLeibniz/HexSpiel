@@ -1,4 +1,4 @@
-// Assets/Scripts/HexGridManager.cs
+// Assets/Scripts/HexMap/HexGridManager.cs
 
 using UnityEngine;
 using System.Collections.Generic;

@@ -1,3 +1,5 @@
+// Assets/Scripts/HexMap/HexCoord.cs
+
 [System.Serializable]
 public struct HexCoord
 {

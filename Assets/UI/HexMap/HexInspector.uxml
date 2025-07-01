@@ -1,14 +1,14 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd">
-    <Style src="project://database/Assets/UI/HexInspector.uss?fileID=7433441132597879392&amp;guid=d6c6d059e0eb82d4a8a04dc15cd8eeeb&amp;type=3#HexInspector" />
-    <ui:VisualElement class="inspector-container">
+    <Style src="./HexInspector.uss" />
+    
+    <ui:VisualElement class="ui-root"> 
+        <ui:VisualElement class="inspector-container">
 
         <ui:VisualElement class="grid-settings">
             <ui:Label text="Map Settings" class="header" />
 
-             <ui:VisualElement class="field-row">
-                <ui:Label text="Name" class="field-label" />
-                <ui:TextField name="mapNameField"/>
-           </ui:VisualElement>
+            <ui:Label text="Name" class="field-label" />
+            <ui:VisualElement name="mapNameFieldContainer" class="map-name-container" />
 
             <ui:VisualElement class="field-row">
                 <ui:Label text="Width" class="field-label" />
@@ -22,7 +22,7 @@
 
             <ui:Button name="saveButton" text="Save" />
             <ui:Button name="loadButton" text="Load" />
-            <ui:Button name="regenerateButton" text="Reset" />
+            <ui:Button name="resetButton" text="Reset" />
         </ui:VisualElement>
 
         <ui:VisualElement class="divider"/>
@@ -44,10 +44,11 @@
 
         <ui:VisualElement class="field-row">
             <ui:Label text="Label" class="field-label" />
-            <ui:TextField name="labelField" />
+            <ui:TextField name="labelField" class="hex-field"/>
         </ui:VisualElement>
 
         <ui:Button name="applyButton" text="Apply" />
 
+        </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

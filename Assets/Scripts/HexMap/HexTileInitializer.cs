@@ -1,3 +1,5 @@
+// Assets/Scripts/HexMap/HexTileInitializer.cs
+
 using UnityEngine;
 
 [RequireComponent(typeof(MeshFilter))]

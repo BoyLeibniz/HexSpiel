@@ -1,3 +1,5 @@
+// Assets/Scripts/HexMap/HexMeshGenerator.cs
+
 using UnityEngine;
 
 public static class HexMeshGenerator

@@ -1,3 +1,5 @@
+// Assets/Scripts/HexMap/HexGridMat.cs
+
 using UnityEngine;
 
 [RequireComponent(typeof(MeshRenderer), typeof(MeshFilter))]

@@ -1,8 +1,9 @@
-// Assets/Scripts/SaveSystem/JsonSaveSystem.cs
+// Assets/Scripts/Services/JsonSaveSystem.cs
 
 using UnityEngine;
 using System.IO;
 using System;
+using System.Linq;
 
 /// <summary>
 /// Implementation of ISaveSystem that saves and loads MapData using JSON serialization.
@@ -100,20 +101,25 @@ public class JsonSaveSystem : ISaveSystem
     {
         try
         {
-            string[] files = Directory.GetFiles(saveDirectory, $"*{FILE_EXTENSION}");
-            string[] mapNames = new string[files.Length];
-
-            for (int i = 0; i < files.Length; i++)
+            if (!Directory.Exists(saveDirectory))
             {
-                mapNames[i] = Path.GetFileNameWithoutExtension(files[i]);
+                Debug.LogWarning($"Map directory not found: {saveDirectory}");
+                return Array.Empty<string>();
             }
 
-            return mapNames;
+            var files = Directory.GetFiles(saveDirectory, $"*{FILE_EXTENSION}");
+
+            return files.Select(Path.GetFileNameWithoutExtension)
+                        .Where(name => !string.IsNullOrWhiteSpace(name))
+                        .Select(name => name.Replace("_", " ")) // Show friendly display names
+                        .Distinct()
+                        .OrderBy(name => name)
+                        .ToArray();
         }
         catch (Exception e)
         {
-            Debug.LogError($"Failed to get available maps: {e.Message}");
-            return new string[0];
+            Debug.LogError($"[GetAvailableMaps] Failed to list maps: {e}");
+            return Array.Empty<string>();
         }
     }
 

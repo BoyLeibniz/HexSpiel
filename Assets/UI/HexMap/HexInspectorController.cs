@@ -2,6 +2,7 @@
 
 using UnityEngine;
 using UnityEngine.UIElements;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -14,14 +15,16 @@ public class HexInspectorController : MonoBehaviour
     public UIDocument uiDocument;
     public HexGridManager hexGridManager; // <- Drag reference in Inspector
     public DataPersistenceManager dataPersistenceManager;
+    public MapDataService mapDataService;
 
     // UI element references
-    private TextField mapNameField;
+    private ComboBoxField mapNameField;
+
     private IntegerField gridWidthField;
     private IntegerField gridHeightField;
     private Button saveButton;
     private Button loadButton;
-    private Button regenerateButton;
+    private Button resetButton;
     private Button applyButton;
 
     private Label coordLabel;
@@ -48,14 +51,16 @@ public class HexInspectorController : MonoBehaviour
         root.Focus();
 
         // Setup map name input field
-        mapNameField = root.Q<TextField>("mapNameField");
-        string currentName = dataPersistenceManager != null
-            ? dataPersistenceManager.GetFileName()
-            : "default_map";
-        // Display as blank if it's "default_map"
-        mapNameField.SetValueWithoutNotify(
-            currentName == "default_map" ? "" : currentName.Replace("_", " ")
-        );
+        var mapContainer = root.Q<VisualElement>("mapNameFieldContainer");
+        mapNameField = new ComboBoxField(uiDocument.rootVisualElement);  // No callback needed, you handle on click
+        mapNameField.OnDropdownOpening = () =>
+        {
+            var maps = mapDataService?.GetAvailableMaps() ?? Array.Empty<string>();
+            mapNameField.SetItems(new List<string>(maps));
+        };
+
+        mapContainer.Clear();
+        mapContainer.Add(mapNameField);
 
         // Setup grid size input fields
         gridWidthField = root.Q<IntegerField>("gridWidthField");
@@ -101,9 +106,9 @@ public class HexInspectorController : MonoBehaviour
             }
         };
 
-        // Setup Regenerate button
-        regenerateButton = root.Q<Button>("regenerateButton");
-        regenerateButton.clicked += () =>
+        // Setup Reset button
+        resetButton = root.Q<Button>("resetButton");
+        resetButton.clicked += () =>
         {
             int width = Mathf.Max(1, gridWidthField.value);
             int height = Mathf.Max(1, gridHeightField.value);
