@@ -61,6 +61,7 @@ public class HexTileData
     public string type;
     public int cost;
     public string label = ""; // New field, default for backward compatibility
+    public float alpha = 1f;  // Default opaque
 
     /// <summary>
     /// Creates a new tile data object from raw values.

@@ -10,7 +10,8 @@ public static class HexTileConverter
             r = cell.coord.r,
             type = cell.terrainType,
             cost = cell.movementCost,
-            label = cell.label ?? ""
+            label = cell.label ?? "",
+            alpha = cell.alpha
         };
     }
 
@@ -19,5 +20,6 @@ public static class HexTileConverter
         cell.coord = new HexCoord(data.q, data.r);
         cell.SetProperties(data.type, data.cost);
         cell.label = data.label ?? "";
+        cell.alpha = data.alpha;
     }
 }

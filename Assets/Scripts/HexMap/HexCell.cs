@@ -34,6 +34,11 @@ public class HexCell : MonoBehaviour
     public string label = "";
 
     /// <summary>
+    /// Optional transparency for this tile.
+    /// </summary>
+    public float alpha = 1f; // Default opaque
+
+    /// <summary>
     /// Initializes tile data and sets its world position.
     /// </summary>
     public void Init(HexCoord coord, Vector3 position)
