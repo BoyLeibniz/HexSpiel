@@ -85,6 +85,7 @@ The Alpha value is linked to a local HexCell property (not yet persisted in save
 
 Required behaviour:
 
+- Add support for saving/loading alpha values as part of MapData
 - The Alpha value served by the slider should update tile visual transparency on being accepted via the Apply button
 - Transparency should affect only the hex tile base (not outlines, selection glow, or label visibility)
 - Hover and selection logic must be updated to accommodate transparent tiles without rendering artifacts or loss of visibility
@@ -93,7 +94,6 @@ Required behaviour:
 
 Stretch goals:
 
-- Add support for saving/loading alpha values as part of MapData
 - Add visual hint or overlay when transparency is below a readable threshold
 
 ## ⌨️ Keyboard Shortcuts
@@ -131,9 +131,9 @@ These are intended to assist during editing and testing phases.
 
 | ID   | Description                                                                 | Status     | Workaround / Notes                                               |
 |------|-----------------------------------------------------------------------------|------------|------------------------------------------------------------------|
-| #001 | Clicking a selected hex does not always deselect it                        | 🛠 In Progress | Simply add `AddToSelection()` logic to `HexTileVisuals.OnMouseEnter()` |
+| #001 | Clicking a selected hex does not always deselect it                        | 🎯 Resolved | Simply add `AddToSelection()` logic to `HexTileVisuals.OnMouseEnter()` |
 | #002 | Glow applied on Hex selection is not scaling, lighter colors too high      | ⏳ Open     | Visual quirk only; does not affect save/load behavior           |
-| #003 | Changing UI Hex Type after selection updates the color, but new selections revert | ✅ Confirmed | Modify to always respect the current UI Type selection |
+| #003 | Changing UI Hex Type after selection updates the color, but new selections revert | ❓ Needs Review | Modify to always respect the current UI Type selection |
 
 > **Status legend**: ✅ Confirmed • 🧠 Investigating • ⏳ Open • 🛠 In Progress • 🔁 Regression • 🎯 Resolved • ❓ Needs Review • 🚫 Won’t Fix
 

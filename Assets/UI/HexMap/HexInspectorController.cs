@@ -161,7 +161,7 @@ public class HexInspectorController : MonoBehaviour
             string rawLabel = labelField.value ?? "";
             bool applyLabel = rawLabel != "-- Mixed --";
             float newAlpha = alphaSlider.value;
-            bool applyAlpha = alphaValueLabel.text != "Mixed";
+            bool applyAlpha = alphaValueLabel.text != "-- Mixed --";
 
             foreach (var cell in selectedHexes)
             {
@@ -328,7 +328,7 @@ public class HexInspectorController : MonoBehaviour
             else
             {
                 alphaSlider.SetValueWithoutNotify(0.5f); // Parked visually
-                alphaValueLabel.text = "Mixed";
+                alphaValueLabel.text = "-- Mixed --";
                 alphaValueLabel.AddToClassList("mixed");
             }
         }
