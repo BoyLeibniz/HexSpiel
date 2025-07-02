@@ -77,6 +77,7 @@ public class MapDataService : MonoBehaviour
                         Color terrainColor = GetTerrainColor(tileData.type);
                         visuals.baseColor = terrainColor;
                         visuals.SetColor(terrainColor);
+                        visuals.SetAlpha(tileData.alpha);
                     }
                 }
             }
