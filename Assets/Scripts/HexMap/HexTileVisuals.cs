@@ -9,7 +9,7 @@ using UnityEngine;
 [RequireComponent(typeof(Renderer))]
 public class HexTileVisuals : MonoBehaviour
 {
-    [Tooltip("Default color for the tile when unselected and not hovered.")]
+    [Tooltip("Used for fallback visuals if tile has no type.")]
     public Color baseColor = new Color(0.8f, 1f, 0.8f, 0.6f);      // normal
     [Tooltip("Highlight color shown when hovering.")]
     public Color hoverColor = new Color(1f, 1f, 0.4f, 0.6f);       // light yellow
@@ -99,6 +99,35 @@ public class HexTileVisuals : MonoBehaviour
         Color emission = color.linear * gain;
         props.SetColor("_EmissionColor", emission);
         rend.SetPropertyBlock(props);
+    }
+
+    /// <summary>
+    /// Updates the transparency (alpha) of the tile's material.
+    /// </summary>
+    public void SetAlpha(float alpha)
+    {
+        rend.GetPropertyBlock(props);
+
+        if (props.HasColor("_BaseColor"))
+        {
+            Color c = props.GetColor("_BaseColor");
+            c.a = alpha;
+            props.SetColor("_BaseColor", c);
+        }
+
+        rend.SetPropertyBlock(props);
+    }
+
+    /// <summary>
+    /// Returns the transparency (alpha) of the tile's material.
+    /// </summary>
+
+    public float GetAlpha()
+    {
+        rend.GetPropertyBlock(props);
+        return props.HasColor("_BaseColor")
+            ? props.GetColor("_BaseColor").a
+            : 1f;
     }
 
     /// <summary>

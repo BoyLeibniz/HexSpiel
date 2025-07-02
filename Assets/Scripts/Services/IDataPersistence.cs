@@ -1,4 +1,4 @@
-// Assets/Scripts/SaveSystem/IDataPersistence.cs
+// Assets/Scripts/Services/IDataPersistence.cs
 
 /// <summary>
 /// Interface for components that participate in saving/loading persistent map data.
