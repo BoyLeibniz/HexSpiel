@@ -31,6 +31,9 @@ public class HexInspectorController : MonoBehaviour
     private DropdownField typeDropdown;
     private IntegerField costField;
     private TextField labelField;
+    private Slider alphaSlider;
+    private Label alphaValueLabel;
+
     // Currently selected hexes and drag state
     private List<HexCell> selectedHexes = new();
 
@@ -123,6 +126,15 @@ public class HexInspectorController : MonoBehaviour
         labelField = root.Q<TextField>("labelField");
         costField.value = 1;
         labelField.value = "";
+        alphaSlider = root.Q<Slider>("alphaSlider");
+        alphaSlider.pageSize = 0.01f; // Allow fine values for slider
+        alphaSlider.value = 1f; // Default alpha value
+        alphaValueLabel = root.Q<Label>("alphaValueLabel");
+        // Setup the value label update
+        alphaSlider.RegisterValueChangedCallback(evt =>
+        {
+            alphaValueLabel.text = $"{evt.newValue:0.00}";
+        });
 
         // Populate dropdown and default selection
         typeDropdown.choices = templates.Select(t => t.name).ToList();
@@ -148,6 +160,9 @@ public class HexInspectorController : MonoBehaviour
 
             string rawLabel = labelField.value ?? "";
             bool applyLabel = rawLabel != "-- Mixed --";
+            float newAlpha = alphaSlider.value;
+            bool applyAlpha = alphaValueLabel.text != "Mixed";
+
             foreach (var cell in selectedHexes)
             {
                 cell.SetProperties(template.name, template.movementCost);
@@ -162,6 +177,12 @@ public class HexInspectorController : MonoBehaviour
                 {
                     hexGridManager.tooltipManager.UpdateCellTooltip(cell);
                 }
+                // Update transparency if necessary
+                if (applyAlpha)
+                {
+                    cell.alpha = newAlpha;
+                }
+
             }
             ClearSelection();
         };
@@ -264,6 +285,8 @@ public class HexInspectorController : MonoBehaviour
             typeDropdown.SetValueWithoutNotify(templates[0].name);
             costField.SetValueWithoutNotify(templates[0].movementCost);
             labelField.SetValueWithoutNotify("");
+            alphaSlider.SetEnabled(false);
+            alphaValueLabel.text = "";
             return;
         }
 
@@ -274,6 +297,10 @@ public class HexInspectorController : MonoBehaviour
             typeDropdown.SetValueWithoutNotify(cell.terrainType);
             costField.SetValueWithoutNotify(cell.movementCost);
             labelField.SetValueWithoutNotify(cell.label ?? "");
+            alphaSlider.SetValueWithoutNotify(cell.alpha);
+            alphaValueLabel.text = $"{cell.alpha:0.00}";
+            alphaValueLabel.RemoveFromClassList("mixed");
+            alphaSlider.SetEnabled(true);
         }
         else
         {
@@ -288,6 +315,22 @@ public class HexInspectorController : MonoBehaviour
             var firstLabel = selectedHexes[0].label ?? "";
             bool allSameLabel = selectedHexes.All(h => (h.label ?? "") == firstLabel);
             labelField.SetValueWithoutNotify(allSameLabel ? firstLabel : "-- Mixed --");
+
+            alphaSlider.SetEnabled(true);
+            var uniqueAlphas = selectedHexes.Select(h => h.alpha).Distinct().ToList();
+            if (uniqueAlphas.Count == 1)
+            {
+                float alpha = uniqueAlphas[0];
+                alphaSlider.SetValueWithoutNotify(alpha);
+                alphaValueLabel.text = $"{alpha:0.00}";
+                alphaValueLabel.RemoveFromClassList("mixed");
+            }
+            else
+            {
+                alphaSlider.SetValueWithoutNotify(0.5f); // Parked visually
+                alphaValueLabel.text = "Mixed";
+                alphaValueLabel.AddToClassList("mixed");
+            }
         }
     }
 

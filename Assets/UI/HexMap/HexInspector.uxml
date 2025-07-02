@@ -2,53 +2,68 @@
     <Style src="./HexInspector.uss" />
     
     <ui:VisualElement class="ui-root"> 
-        <ui:VisualElement class="inspector-container">
+        <!-- Map Settings Panel -->
+        <ui:VisualElement class="inspector-left" >
 
-        <ui:VisualElement class="grid-settings">
-            <ui:Label text="Map Settings" class="header" />
+            <ui:VisualElement class="grid-settings">
+                <ui:Label text="Map Settings" class="header" />
 
-            <ui:Label text="Name" class="field-label" />
-            <ui:VisualElement name="mapNameFieldContainer" class="map-name-container" />
+                <ui:Label text="Name" class="field-label" />
+                <ui:VisualElement name="mapNameFieldContainer" class="map-name-container" />
+
+                <ui:VisualElement class="field-row">
+                    <ui:Label text="Width" class="field-label" />
+                    <ui:IntegerField name="gridWidthField" class="hex-field" />
+                </ui:VisualElement>
+
+                <ui:VisualElement class="field-row">
+                    <ui:Label text="Height" class="field-label" />
+                    <ui:IntegerField name="gridHeightField" class="hex-field" />
+                </ui:VisualElement>
+
+                <ui:Button name="saveButton" text="Save" />
+                <ui:Button name="loadButton" text="Load" />
+                <ui:Button name="resetButton" text="Reset" />
+            </ui:VisualElement>
+
+        </ui:VisualElement> // Inspector Left Side
+        <!-- Hex Settings Panel -->
+        <ui:VisualElement class="inspector-right" > 
+
+            <ui:Label text="Hex Settings" class="header" />
 
             <ui:VisualElement class="field-row">
-                <ui:Label text="Width" class="field-label" />
-                <ui:IntegerField name="gridWidthField" class="hex-field" />
+                <ui:Label text="Coordinates" class="field-label" />
+                <ui:Label name="coordLabel" text="(x, z)" class="value-label" />
+            </ui:VisualElement>
+
+            <ui:Label text="Type" />
+            <ui:DropdownField name="typeDropdown" />
+
+            <ui:VisualElement class="field-row">
+                <ui:Label text="Moves" class="field-label" />
+                <ui:IntegerField name="costField" class="hex-field" />
             </ui:VisualElement>
 
             <ui:VisualElement class="field-row">
-                <ui:Label text="Height" class="field-label" />
-                <ui:IntegerField name="gridHeightField" class="hex-field" />
+                <ui:Label text="Label" class="field-label" />
+                <ui:TextField name="labelField" class="hex-field" />
             </ui:VisualElement>
 
-            <ui:Button name="saveButton" text="Save" />
-            <ui:Button name="loadButton" text="Load" />
-            <ui:Button name="resetButton" text="Reset" />
-        </ui:VisualElement>
+            <ui:VisualElement class="field-row">
+                <ui:Label text="Transparency" class="field-label" />
+            </ui:VisualElement>
 
-        <ui:VisualElement class="divider"/>
+            <ui:VisualElement class="field-row">
+                <ui:Slider name="alphaSlider" low-value="0" high-value="1" value="1" />
+            </ui:VisualElement>
 
-        <ui:Label text="Hex Settings" class="header" />
+            <ui:VisualElement class="field-row">
+                <ui:Label name="alphaValueLabel" class="value-label" text="" />
+            </ui:VisualElement>
 
-        <ui:VisualElement class="field-row">
-            <ui:Label text="Coordinates" class="field-label" />
-            <ui:Label name="coordLabel" text="(x, z)" class="value-label" />
-        </ui:VisualElement>
+            <ui:Button name="applyButton" text="Apply" />
 
-        <ui:Label text="Type" />
-        <ui:DropdownField name="typeDropdown" />
-
-        <ui:VisualElement class="field-row">
-            <ui:Label text="Moves" class="field-label" />
-            <ui:IntegerField name="costField" class="hex-field" />
-        </ui:VisualElement>
-
-        <ui:VisualElement class="field-row">
-            <ui:Label text="Label" class="field-label" />
-            <ui:TextField name="labelField" class="hex-field" />
-        </ui:VisualElement>
-
-        <ui:Button name="applyButton" text="Apply" />
-
-        </ui:VisualElement>
-    </ui:VisualElement>
+        </ui:VisualElement> // Inspector Right Side
+    </ui:VisualElement> // Root Visual Element
 </ui:UXML>
