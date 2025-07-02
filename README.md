@@ -76,16 +76,25 @@ Simply copy it to your system's Unity Data folder if needed.
 
 ### Current Priority: 
 
-Tooltip presentation - show the new `HexCell.label` property as a floating tooltip in the scene.
+Hex Transparency Integration – Apply and refine a working alpha (transparency) slider for hex tiles.
 
-Required behaviour; 
-- Tooltips should be presented only over tiles that have a value
-- They should of readable size without being so large as to obscure neighbouring tooltips
-- The tooltips should always present towards the camera billboard-style, even on camera movement
-- The tooltips should be toggled on and off via a keyboard shortcut (e.g. ctrl-T)
-- Tooltips should be presented and destroyed appropriately as maps are loaded, edited and destroyed (reset)
-- The code should be extensible for additional future properties
+Current status:
 
+A new alpha slider UI element is implemented and hooked into the Hex Settings UI panel.
+The Alpha value is linked to a local HexCell property (not yet persisted in save/load).
+
+Required behaviour:
+
+- The Alpha value served by the slider should update tile visual transparency on being accepted via the Apply button
+- Transparency should affect only the hex tile base (not outlines, selection glow, or label visibility)
+- Hover and selection logic must be updated to accommodate transparent tiles without rendering artifacts or loss of visibility
+- The expected behaviour for Multiple selection with mixed alpha values is that the UI should show a "-- Mixed --" placeholder label that permits subsequent slider adjustment and the application of the new value to all selected Hexes. That value should be respected visually when the Apply button is pressed.
+- Alpha changes should persist during scene session
+
+Stretch goals:
+
+- Add support for saving/loading alpha values as part of MapData
+- Add visual hint or overlay when transparency is below a readable threshold
 
 ## ⌨️ Keyboard Shortcuts
 
