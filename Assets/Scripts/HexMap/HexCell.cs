@@ -21,7 +21,7 @@ public class HexCell : MonoBehaviour
     /// <summary>
     /// Type of terrain assigned to this tile.
     /// </summary>
-    public string terrainType = "Plain";
+    public string terrainType;
 
     /// <summary>
     /// Movement cost associated with this tile's terrain.

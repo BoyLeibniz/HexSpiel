@@ -1,16 +1,15 @@
 // Assets/Scripts/HexMap/HexTileVisuals.cs
-
 using UnityEngine;
 
 /// <summary>
 /// Controls visual appearance and interaction feedback for a single hex tile.
-/// Responds to hover, selection, and terrain settings.
+/// Responds to hover, selection, and terrain settings with layered transparency support.
 /// </summary>
 [RequireComponent(typeof(Renderer))]
 public class HexTileVisuals : MonoBehaviour
 {
     [Tooltip("Used for fallback visuals if tile has no type.")]
-    public Color baseColor = new Color(0.8f, 1f, 0.8f, 0.6f);      // normal
+    public Color baseColor = new Color(0.75f, 0.75f, 0.75f, 1.0f); // Base hex default color with transparency
     [Tooltip("Highlight color shown when hovering.")]
     public Color hoverColor = new Color(1f, 1f, 0.4f, 0.6f);       // light yellow
     [Tooltip("Color used when tile is selected.")]
@@ -20,6 +19,7 @@ public class HexTileVisuals : MonoBehaviour
     public bool affectBaseColorOnHover = true;
 
     private HexInspectorController inspectorController;
+    private HexCell hexCell;
 
     /// <summary>
     /// Assigns the controller responsible for managing this tile's selection logic.
@@ -37,9 +37,11 @@ public class HexTileVisuals : MonoBehaviour
     void Awake()
     {
         rend = GetComponent<Renderer>();
+        hexCell = GetComponent<HexCell>();
         props = new MaterialPropertyBlock();
-        SetColor(baseColor);
-        SetGlow(Color.black);  // Set base glow to black (no emission)
+
+        // Initialize with base color and transparency
+        UpdateVisualState();
     }
 
     void OnMouseEnter()
@@ -75,33 +77,6 @@ public class HexTileVisuals : MonoBehaviour
     }
 
     /// <summary>
-    /// Updates the base color used by this tile.
-    /// </summary>
-    public void SetColor(Color color)
-    {
-        rend.GetPropertyBlock(props);
-        props.SetColor("_BaseColor", color);
-        rend.SetPropertyBlock(props);
-    }
-
-    /// <summary>
-    /// Updates the emission/glow color with safety clamp to prevent over-brightening.
-    /// </summary>
-    void SetGlow(Color color)
-    {
-        rend.GetPropertyBlock(props);
-
-        Color.RGBToHSV(color, out float h, out float s, out float v);
-        float target = 1.2f;
-        float gain = target / Mathf.Max(0.01f, v);
-        gain = Mathf.Clamp(gain, 0.8f, 5.0f);  // prevent excessive bloom
-
-        Color emission = color.linear * gain;
-        props.SetColor("_EmissionColor", emission);
-        rend.SetPropertyBlock(props);
-    }
-
-    /// <summary>
     /// Updates selection state from external scripts.
     /// </summary>
     public void SetSelected(bool value)
@@ -111,29 +86,62 @@ public class HexTileVisuals : MonoBehaviour
     }
 
     /// <summary>
-    /// Applies current hover/selection state to tile visuals.
+    /// Applies current hover/selection state to tile visuals with layered transparency.
     /// </summary>
     void UpdateVisualState()
     {
-        if (inspectorController == null)
+        if (inspectorController == null || hexCell == null)
             return;
 
-        Color current = inspectorController.GetSelectedTerrainColor();
+        Debug.Log($"{name} UpdateVisualState → " +
+            $"terrainType: '{hexCell.terrainType}', " +
+            $"isSelected: {isSelected}, isHovered: {isHovered}, " +
+            $"baseColor: {baseColor}, " +
+            $"GetTerrainColor: {inspectorController.GetTerrainColor(hexCell.terrainType)}, " +
+            $"hexAlpha: {hexCell.alpha}, " +
+            $"showTransparency: {inspectorController.GetShowTransparency()}");
 
+        // Determine effective terrain color
+        Color terrainColor = baseColor; // fallback for untyped tiles
+        if (!string.IsNullOrEmpty(hexCell.terrainType))
+        {
+            terrainColor = inspectorController.GetTerrainColor(hexCell.terrainType);
+        }
+
+        // Determine effective alpha (with override)
+        float alpha = 1.0f;
+        if (inspectorController.GetShowTransparency())
+        {
+            if (!string.IsNullOrEmpty(hexCell.terrainType))
+                alpha = hexCell.alpha;
+            else
+                alpha = baseColor.a;
+        }
+        Color baseWithAlpha = new Color(terrainColor.r, terrainColor.g, terrainColor.b, alpha);
+
+        // Determine overlay color (glow)
+        Color overlay = Color.black;
         if (isSelected)
         {
-            SetColor(current);
-            SetGlow(current * 1.1f);
+            overlay = new Color(selectedColor.r, selectedColor.g, selectedColor.b, selectedColor.a * 0.8f);
         }
         else if (isHovered)
         {
-            SetColor(current);
-            SetGlow(current * 1.2f); // Slightly stronger glow
+            overlay = new Color(hoverColor.r, hoverColor.g, hoverColor.b, hoverColor.a * 0.6f);
         }
-        else
-        {
-            SetColor(baseColor);
-            SetGlow(Color.black);
-        }
+
+        // Apply to renderer
+        rend.GetPropertyBlock(props);
+        props.SetColor("_BaseColor", baseWithAlpha);
+        props.SetColor("_EmissionColor", overlay.linear * 1.2f);
+        rend.SetPropertyBlock(props);
+    }
+
+    /// <summary>
+    /// Called when hex cell properties change to refresh visuals.
+    /// </summary>
+    public void RefreshVisuals()
+    {
+        UpdateVisualState();
     }
 }

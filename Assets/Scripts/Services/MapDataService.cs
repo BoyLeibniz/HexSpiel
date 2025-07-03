@@ -74,14 +74,13 @@ public class MapDataService : MonoBehaviour
                     HexTileVisuals visuals = cell.GetComponent<HexTileVisuals>();
                     if (visuals != null)
                     {
-                        Color terrainColor = GetTerrainColor(tileData.type);
-                        visuals.baseColor = terrainColor;
-                        visuals.SetColor(terrainColor);
+                        // Refresh visuals to apply transparency immediately
+                        visuals.RefreshVisuals();
                     }
                 }
             }
         }
-        
+
         Debug.Log($"Applied map data: {mapData.width}x{mapData.height} grid with {mapData.tiles.Count} tiles");
     }
 

@@ -1,3 +1,4 @@
+<!-- Assets/UI/HexMap/HexInspector.uxml -->
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd">
     <Style src="./HexInspector.uss" />
     
@@ -24,6 +25,7 @@
                 <ui:Button name="saveButton" text="Save" />
                 <ui:Button name="loadButton" text="Load" />
                 <ui:Button name="resetButton" text="Reset" />
+                
             </ui:VisualElement>
 
         </ui:VisualElement> // Inspector Left Side
@@ -60,6 +62,10 @@
 
             <ui:VisualElement class="field-row">
                 <ui:Label name="alphaValueLabel" class="value-label" text="" />
+            </ui:VisualElement>
+
+            <ui:VisualElement class="field-row">
+                <ui:Toggle name="showTransparencyToggle" text="Show Transparency" value="true" />
             </ui:VisualElement>
 
             <ui:Button name="applyButton" text="Apply" />

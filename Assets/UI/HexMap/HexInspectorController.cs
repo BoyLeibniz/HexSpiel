@@ -1,5 +1,4 @@
 // Assets/UI/HexMap/HexInspectorController.cs
-
 using UnityEngine;
 using UnityEngine.UIElements;
 using System;
@@ -33,6 +32,7 @@ public class HexInspectorController : MonoBehaviour
     private TextField labelField;
     private Slider alphaSlider;
     private Label alphaValueLabel;
+    private Toggle showTransparencyToggle;
 
     // Currently selected hexes and drag state
     private List<HexCell> selectedHexes = new();
@@ -102,6 +102,7 @@ public class HexInspectorController : MonoBehaviour
                 Debug.Log("Map loaded successfully!");
                 UpdateGridUI(hexGridManager.width, hexGridManager.height);
                 ClearSelection();
+                RefreshAllHexVisuals(); // Refresh visuals after load
             }
             else
             {
@@ -130,6 +131,15 @@ public class HexInspectorController : MonoBehaviour
         alphaSlider.pageSize = 0.01f; // Allow fine values for slider
         alphaSlider.value = 1f; // Default alpha value
         alphaValueLabel = root.Q<Label>("alphaValueLabel");
+
+        // Setup Show Transparency toggle
+        showTransparencyToggle = root.Q<Toggle>("showTransparencyToggle");
+        showTransparencyToggle.value = true; // Default to showing transparency
+        showTransparencyToggle.RegisterValueChangedCallback(evt =>
+        {
+            RefreshAllHexVisuals();
+        });
+
         // Setup the value label update
         alphaSlider.RegisterValueChangedCallback(evt =>
         {
@@ -161,29 +171,30 @@ public class HexInspectorController : MonoBehaviour
             string rawLabel = labelField.value ?? "";
             bool applyLabel = rawLabel != "-- Mixed --";
             float newAlpha = alphaSlider.value;
-            bool applyAlpha = alphaValueLabel.text != "-- Mixed --";
+            bool applyAlpha = alphaValueLabel.text != "-- Mixed";
 
             foreach (var cell in selectedHexes)
             {
+                // Apply terrain type and cost to model
                 cell.SetProperties(template.name, template.movementCost);
+
+                // Apply label if eligible
                 if (applyLabel)
                     cell.label = rawLabel;
-                var vis = cell.GetComponent<HexTileVisuals>();
-                if (vis != null)
-                    vis.baseColor = template.color;
 
-                // Update tooltip for this cell
-                if (hexGridManager.tooltipManager != null)
-                {
-                    hexGridManager.tooltipManager.UpdateCellTooltip(cell);
-                }
-                // Update transparency if necessary
+                // Apply alpha if changed
                 if (applyAlpha)
-                {
                     cell.alpha = newAlpha;
-                }
 
+                // Update tooltip
+                if (hexGridManager.tooltipManager != null)
+                    hexGridManager.tooltipManager.UpdateCellTooltip(cell);
+
+                // Trigger visual refresh from model state
+                var vis = cell.GetComponent<HexTileVisuals>();
+                vis?.RefreshVisuals();
             }
+
             ClearSelection();
         };
     }
@@ -362,8 +373,36 @@ public class HexInspectorController : MonoBehaviour
             selectedType = selectedHexes[0].terrainType;  // First tile selected 
         }
 
-        var template = templates.FirstOrDefault(t => t.name == selectedType);
+        return GetTerrainColor(selectedType);
+    }
+
+    /// <summary>
+    /// Returns the color of the passed hex Type 
+    /// </summary>
+    public Color GetTerrainColor(string type)
+    {
+        var template = templates.FirstOrDefault(t => t.name == type);
         return template?.color ?? new Color(0.5f, 0.5f, 0.5f);  // Default gray
     }
-    
+
+    /// <summary>
+    /// Returns whether transparency should be shown based on the toggle state.
+    /// </summary>
+    public bool GetShowTransparency()
+    {
+        return showTransparencyToggle?.value ?? true;
+    }
+
+    /// <summary>
+    /// Refreshes all hex visuals in the grid (useful after loading or toggling transparency).
+    /// </summary>
+    private void RefreshAllHexVisuals()
+    {
+        foreach (Transform child in hexGridManager.transform)
+        {
+            var visuals = child.GetComponent<HexTileVisuals>();
+            visuals?.RefreshVisuals();
+        }
+    }
+
 }
