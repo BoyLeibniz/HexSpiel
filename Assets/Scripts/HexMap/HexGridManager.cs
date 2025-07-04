@@ -39,13 +39,9 @@ public class HexGridManager : MonoBehaviour, IDataPersistence
     /// Reference to the HexInspectorController for managing tile selection and properties.
     /// Must be assigned in the Unity Editor.
     /// </summary>
-    public HexInspectorController inspectorController;
+    public HexEditorController editorController;
 
-    /// <summary>
-    /// Reference to the MapDataService for handling save/load operations.
-    /// </summary>
-    [Header("Save System")]
-    public MapDataService mapDataService;
+    private MapDataService mapDataService;
 
     private const float HEX_WIDTH = 1.5f;    // Distance between centers of adjacent hexes horizontally
     private const float HEX_HEIGHT = 1.732f; // Full height of a hex (approx. sqrt(3)) for vertical spacing
@@ -63,6 +59,7 @@ public class HexGridManager : MonoBehaviour, IDataPersistence
     void Start()
     {
         Debug.Log($"[HexGridManager] Default Data Path (Application.persistentDataPath): {Application.persistentDataPath}");
+        mapDataService = new MapDataService(); // Data helper for saving/loading
         GenerateGrid();
     }
 
@@ -110,8 +107,8 @@ public class HexGridManager : MonoBehaviour, IDataPersistence
 
                 // Share the Controller with the Hex
                 var visuals = hexGO.GetComponent<HexTileVisuals>();
-                if (visuals != null && inspectorController != null)
-                    visuals.SetInspector(inspectorController);
+                if (visuals != null && editorController != null)
+                    visuals.SetEditor(editorController);
             }
         }
 
@@ -212,22 +209,6 @@ public class HexGridManager : MonoBehaviour, IDataPersistence
         {
             tooltipManager.RefreshAllTooltips();
         }
-    }
-
-    /// <summary>
-    /// Saves the current grid to file using the MapDataService. Returns success state.
-    /// </summary>
-    public bool SaveMap(string fileName = "default_map")
-    {
-        return mapDataService?.SaveCurrentMap(this, fileName) ?? false;
-    }
-
-    /// <summary>
-    /// Loads a grid from file using the MapDataService. Returns success state.
-    /// </summary>
-    public bool LoadMap(string fileName = "default_map")
-    {
-        return mapDataService?.LoadMap(this, fileName) ?? false;
     }
 
     #endregion

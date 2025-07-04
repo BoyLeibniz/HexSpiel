@@ -8,13 +8,29 @@ using System.Linq;
 /// Manages conversion between HexGridManager runtime state and serializable MapData structures.
 /// Delegates file-level persistence to an ISaveSystem implementation.
 /// </summary>
-public class MapDataService : MonoBehaviour
+public class MapDataService 
 {
     private ISaveSystem saveSystem;
 
-    void Awake()
+    private HexTileData CellToData(HexCell cell)
     {
-        saveSystem = new JsonSaveSystem();
+        return new HexTileData
+        {
+            q = cell.coord.q,
+            r = cell.coord.r,
+            type = cell.terrainType,
+            cost = cell.movementCost,
+            label = cell.label ?? "",
+            alpha = cell.alpha
+        };
+    }
+
+    private void ApplyDataToCell(HexTileData data, HexCell cell)
+    {
+        cell.coord = new HexCoord(data.q, data.r);
+        cell.SetProperties(data.type, data.cost);
+        cell.label = data.label ?? "";
+        cell.alpha = data.alpha;
     }
 
     /// <summary>
@@ -35,7 +51,7 @@ public class MapDataService : MonoBehaviour
             HexCell cell = child.GetComponent<HexCell>();
             if (cell != null)
             {
-                mapData.tiles.Add(HexTileConverter.ToData(cell));
+                mapData.tiles.Add(CellToData(cell));
             }
         }
         mapData.version = 2;
@@ -69,7 +85,7 @@ public class MapDataService : MonoBehaviour
                 string key = $"{cell.coord.q},{cell.coord.r}";
                 if (tileDataLookup.TryGetValue(key, out HexTileData tileData))
                 {
-                    HexTileConverter.ApplyDataToCell(tileData, cell);
+                    ApplyDataToCell(tileData, cell);
 
                     HexTileVisuals visuals = cell.GetComponent<HexTileVisuals>();
                     if (visuals != null)
@@ -82,45 +98,6 @@ public class MapDataService : MonoBehaviour
         }
 
         Debug.Log($"Applied map data: {mapData.width}x{mapData.height} grid with {mapData.tiles.Count} tiles");
-    }
-
-    /// <summary>
-    /// Saves the current grid state to disk.
-    /// </summary>
-    public bool SaveCurrentMap(HexGridManager gridManager, string fileName = "default_map")
-    {
-        MapData mapData = CreateMapDataFromGrid(gridManager);
-        return saveSystem.SaveMap(mapData, fileName);
-    }
-
-    /// <summary>
-    /// Loads map data and applies it to the given grid.
-    /// </summary>
-    public bool LoadMap(HexGridManager gridManager, string fileName = "default_map")
-    {
-        MapData mapData = saveSystem.LoadMap(fileName);
-        if (mapData != null)
-        {
-            ApplyMapDataToGrid(mapData, gridManager);
-            return true;
-        }
-        return false;
-    }
-
-    /// <summary>
-    /// Checks if a map file exists by name.
-    /// </summary>
-    public bool MapExists(string fileName = "default_map")
-    {
-        return saveSystem.MapExists(fileName);
-    }
-
-    /// <summary>
-    /// Lists all saved map file names.
-    /// </summary>
-    public string[] GetAvailableMaps()
-    {
-        return saveSystem.GetAvailableMaps();
     }
 
     /// <summary>

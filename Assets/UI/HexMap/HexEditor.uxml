@@ -1,6 +1,6 @@
 <!-- Assets/UI/HexMap/HexInspector.uxml -->
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd">
-    <Style src="./HexInspector.uss" />
+    <Style src="HexEditor.uss" />
     
     <ui:VisualElement class="ui-root"> 
         <!-- Map Settings Panel -->

@@ -1,4 +1,4 @@
-// Assets/UI/HexMap/HexInspectorController.cs
+// Assets/UI/HexMap/HexEditorController.cs
 using UnityEngine;
 using UnityEngine.UIElements;
 using System;
@@ -6,10 +6,10 @@ using System.Collections.Generic;
 using System.Linq;
 
 /// <summary>
-/// Controls the inspector UI for interacting with and modifying hex tiles.
+/// Controls the UI for interacting with and modifying hex tiles.
 /// Handles grid sizing, tile selection, terrain type assignment, and save/load.
 /// </summary>
-public class HexInspectorController : MonoBehaviour
+public class HexEditorController : MonoBehaviour
 {
     public UIDocument uiDocument;
     public HexGridManager hexGridManager; // <- Drag reference in Inspector
@@ -58,7 +58,7 @@ public class HexInspectorController : MonoBehaviour
         mapNameField = new ComboBoxField(uiDocument.rootVisualElement);  // No callback needed, you handle on click
         mapNameField.OnDropdownOpening = () =>
         {
-            var maps = mapDataService?.GetAvailableMaps() ?? Array.Empty<string>();
+            var maps = dataPersistenceManager?.GetAvailableMaps() ?? Array.Empty<string>();
             mapNameField.SetItems(new List<string>(maps));
         };
 

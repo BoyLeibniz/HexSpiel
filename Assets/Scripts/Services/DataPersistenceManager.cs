@@ -3,6 +3,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
+using System;
 
 /// <summary>
 /// Manages save/load delegation between the save system and a single IDataPersistence target in the scene.
@@ -54,17 +55,6 @@ public class DataPersistenceManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Loads default MapData from disk and passes it to the active IDataPersistence implementer.
-    /// </summary>
-    public bool LoadGame()
-    {
-        MapData data = saveSystem.LoadMap(fileName);
-        if (data == null) return false;
-
-        return dataPersistenceTarget?.LoadData(data) ?? false;
-    }
-
-    /// <summary>
     /// Loads the named MapData from disk and passes it to the active IDataPersistence implementer.
     /// </summary>
     public bool LoadGame(string name)
@@ -74,5 +64,13 @@ public class DataPersistenceManager : MonoBehaviour
 
         SetFileName(name); // Keep filename in sync for future saves
         return dataPersistenceTarget?.LoadData(data) ?? false;
+    }
+
+    /// <summary>
+    /// Get the available maps from the SaveSystem.
+    /// </summary>
+    public string[] GetAvailableMaps()
+    {
+        return saveSystem?.GetAvailableMaps() ?? Array.Empty<string>();
     }
 }

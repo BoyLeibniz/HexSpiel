@@ -8,25 +8,35 @@ using UnityEngine;
 [RequireComponent(typeof(Renderer))]
 public class HexTileVisuals : MonoBehaviour
 {
+    /// <summary>
+    /// Base color for untyped tiles (used if terrainType is empty).
+    /// Do not rely on the field's initial value, it's overridden by serialized prefab
+    /// Set via the Unity Inspector, should match the base material color 
+    /// </summary>
     [Tooltip("Used for fallback visuals if tile has no type.")]
-    public Color baseColor = new Color(0.75f, 0.75f, 0.75f, 1.0f); // Base hex default color with transparency
+    public Color baseColor; // Default: #727C96, alpha 153/0.6f
+    /// <summary>
+    /// Highlight color used when hovering.
+    /// Set in the Inspector via prefab to match desired glow intensity.
+    /// </summary>
     [Tooltip("Highlight color shown when hovering.")]
-    public Color hoverColor = new Color(1f, 1f, 0.4f, 0.6f);       // light yellow
+    public Color hoverColor; // Default: #FFFF66, alpha 153/0.6f
+    /// <summary>
+    /// Highlight color used when selected.
+    /// Set in the Inspector via prefab to match selection visual style.
+    /// </summary>
     [Tooltip("Color used when tile is selected.")]
-    public Color selectedColor = new Color(0.5f, 1f, 0.5f, 0.7f);  // light green
+    public Color selectedColor; // Default: #80FF80, alpha 153/0.6f
 
-    [Tooltip("If true, changes base color when hovered.")]
-    public bool affectBaseColorOnHover = true;
-
-    private HexInspectorController inspectorController;
+    private HexEditorController editorController;
     private HexCell hexCell;
 
     /// <summary>
     /// Assigns the controller responsible for managing this tile's selection logic.
     /// </summary>
-    public void SetInspector(HexInspectorController controller)
+    public void SetEditor(HexEditorController controller)
     {
-        this.inspectorController = controller;
+        this.editorController = controller;
     }
 
     private MaterialPropertyBlock props;
@@ -47,10 +57,10 @@ public class HexTileVisuals : MonoBehaviour
     void OnMouseEnter()
     {
         // If dragging, add to controller selection
-        if (Input.GetMouseButton(0) && TryGetComponent<HexCell>(out var cell) && inspectorController != null)
+        if (Input.GetMouseButton(0) && TryGetComponent<HexCell>(out var cell) && editorController != null)
         {
             isSelected = true;
-            inspectorController.AddToSelection(cell);
+            editorController.AddToSelection(cell);
         }
         isHovered = true;
         UpdateVisualState();
@@ -67,12 +77,12 @@ public class HexTileVisuals : MonoBehaviour
         isSelected = !isSelected;
         UpdateVisualState();
 
-        if (TryGetComponent<HexCell>(out var cell) && inspectorController != null)
+        if (TryGetComponent<HexCell>(out var cell) && editorController != null)
         {
             if (isSelected)
-                inspectorController.AddToSelection(cell);
+                editorController.AddToSelection(cell);
             else
-                inspectorController.RemoveFromSelection(cell);
+                editorController.RemoveFromSelection(cell);
         }
     }
 
@@ -90,27 +100,27 @@ public class HexTileVisuals : MonoBehaviour
     /// </summary>
     void UpdateVisualState()
     {
-        if (inspectorController == null || hexCell == null)
+        if (editorController == null || hexCell == null)
             return;
 
         Debug.Log($"{name} UpdateVisualState → " +
             $"terrainType: '{hexCell.terrainType}', " +
             $"isSelected: {isSelected}, isHovered: {isHovered}, " +
             $"baseColor: {baseColor}, " +
-            $"GetTerrainColor: {inspectorController.GetTerrainColor(hexCell.terrainType)}, " +
+            $"GetTerrainColor: {editorController.GetTerrainColor(hexCell.terrainType)}, " +
             $"hexAlpha: {hexCell.alpha}, " +
-            $"showTransparency: {inspectorController.GetShowTransparency()}");
+            $"showTransparency: {editorController.GetShowTransparency()}");
 
         // Determine effective terrain color
         Color terrainColor = baseColor; // fallback for untyped tiles
         if (!string.IsNullOrEmpty(hexCell.terrainType))
         {
-            terrainColor = inspectorController.GetTerrainColor(hexCell.terrainType);
+            terrainColor = editorController.GetTerrainColor(hexCell.terrainType);
         }
 
         // Determine effective alpha (with override)
         float alpha = 1.0f;
-        if (inspectorController.GetShowTransparency())
+        if (editorController.GetShowTransparency())
         {
             if (!string.IsNullOrEmpty(hexCell.terrainType))
                 alpha = hexCell.alpha;
