@@ -171,7 +171,7 @@ public class HexEditorController : MonoBehaviour
             string rawLabel = labelField.value ?? "";
             bool applyLabel = rawLabel != "-- Mixed --";
             float newAlpha = alphaSlider.value;
-            bool applyAlpha = alphaValueLabel.text != "-- Mixed";
+            bool applyAlpha = alphaValueLabel.text != "-- Mixed --";
 
             foreach (var cell in selectedHexes)
             {

@@ -76,25 +76,18 @@ Simply copy it to your system's Unity Data folder if needed.
 
 ### Current Priority: 
 
-Hex Transparency Integration – Apply and refine a working alpha (transparency) slider for hex tiles.
+[Issue #004](#🐞-outstanding-issues)
+Hex UI Functionality – Apply mulit-selection requirements correctly.
 
 Current status:
 
-A new alpha slider UI element is implemented and hooked into the Hex Settings UI panel.
-The Alpha value is linked to a local HexCell property (not yet persisted in save/load).
+When multiple hexes are selected the UI correctly reflects differences in property values by displaying "-- Mixed --".
+When updates are applied via "Apply" button click, currently _all_ updates are skipped if "-- Mixed --" values are present.
 
 Required behaviour:
 
-- Add support for saving/loading alpha values as part of MapData
-- The Alpha value served by the slider should update tile visual transparency on being accepted via the Apply button
-- Transparency should affect only the hex tile base (not outlines, selection glow, or label visibility)
-- Hover and selection logic must be updated to accommodate transparent tiles without rendering artifacts or loss of visibility
-- The expected behaviour for Multiple selection with mixed alpha values is that the UI should show a "-- Mixed --" placeholder label that permits subsequent slider adjustment and the application of the new value to all selected Hexes. That value should be respected visually when the Apply button is pressed.
-- Alpha changes should persist during scene session
-
-Stretch goals:
-
-- Add visual hint or overlay when transparency is below a readable threshold
+- When update is applied properties that still show as "-- Mixed --" in the UI are not updated, but other properties are updated
+- Visual UI feedback should make this behaviour clearer, such as dimming the Apply button until changes have been made that actually update properties
 
 ## ⌨️ Keyboard Shortcuts
 
@@ -131,9 +124,10 @@ These are intended to assist during editing and testing phases.
 
 | ID   | Description                                                                 | Status     | Workaround / Notes                                               |
 |------|-----------------------------------------------------------------------------|------------|------------------------------------------------------------------|
-| #001 | Clicking a selected hex does not always deselect it                        | 🎯 Resolved | Simply add `AddToSelection()` logic to `HexTileVisuals.OnMouseEnter()` |
-| #002 | Glow applied on Hex selection is not scaling, lighter colors too high      | ⏳ Open     | Visual quirk only; does not affect save/load behavior           |
+| #001 | Clicking a selected hex does not always deselect it                         | 🎯 Resolved | Simply add `AddToSelection()` logic to `HexTileVisuals.OnMouseEnter()` |
+| #002 | Glow applied on Hex selection is not scaling, lighter colors too high       | ⏳ Open     | Visual quirk only; does not affect save/load behavior           |
 | #003 | Changing UI Hex Type after selection updates the color, but new selections revert | ❓ Needs Review | Modify to always respect the current UI Type selection |
+| #004 | Process other Hex property updates for "-- Mixed --" selections             | 🧠 Investigating | Should also update UI behaviour to visually reflect changes pending |
 
 > **Status legend**: ✅ Confirmed • 🧠 Investigating • ⏳ Open • 🛠 In Progress • 🔁 Regression • 🎯 Resolved • ❓ Needs Review • 🚫 Won’t Fix
 
