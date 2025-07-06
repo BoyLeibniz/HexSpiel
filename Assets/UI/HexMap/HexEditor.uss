@@ -1,3 +1,9 @@
+/* Assets/UI/HexMap/HexEditor.uss
+ * Hex Editor Stylesheet
+ * This stylesheet defines the styles for the Hex Editor UI components.
+ * It includes styles for the root container, editor panels, fields, buttons, and more.
+ */
+
 .ui-root {
     width: 100%;
     height: 100%;
