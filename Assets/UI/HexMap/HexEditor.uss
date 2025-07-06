@@ -5,8 +5,8 @@
     flex-direction: row;
 }
 
-.inspector-left,
-.inspector-right {
+.editor-left,
+.editor-right {
     width: 200px;
     height: 100%;
     padding: 10px;
@@ -16,19 +16,19 @@
     flex-direction: column;
 }
 
-.inspector-left {
+.editor-left {
     position: absolute;
     left: 0;
     top: 0;
 }
 
-.inspector-right {
+.editor-right {
     position: absolute;
     right: 0;
     top: 0;
 }
 
-.inspector-container > * {
+.editor-container > * {
     margin-bottom: 6px;
 }
 

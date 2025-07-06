@@ -164,35 +164,49 @@ public class HexEditorController : MonoBehaviour
         applyButton = root.Q<Button>("applyButton");
         applyButton.clicked += () =>
         {
-            string selectedType = typeDropdown.value;
-            TerrainTemplate template = templates.FirstOrDefault(t => t.name == selectedType);
-            if (template == null) return;
+            if (selectedHexes.Count == 0) return;
 
+            string selectedType = typeDropdown.value;
             string rawLabel = labelField.value ?? "";
-            bool applyLabel = rawLabel != "-- Mixed --";
             float newAlpha = alphaSlider.value;
+
+            // Determine what to apply based on mixed field states
+            bool applyTerrain = selectedType != "-- Mixed --";
+            bool applyLabel = rawLabel != "-- Mixed --";
             bool applyAlpha = alphaValueLabel.text != "-- Mixed --";
+
+            TerrainTemplate template = null;
+            if (applyTerrain)
+            {
+                template = templates.FirstOrDefault(t => t.name == selectedType);
+            }
 
             foreach (var cell in selectedHexes)
             {
-                // Apply terrain type and cost to model
-                cell.SetProperties(template.name, template.movementCost);
+                // Apply terrain type and cost only if not mixed
+                if (applyTerrain && template != null)
+                {
+                    cell.SetProperties(template.name, template.movementCost);
+                }
 
-                // Apply label if eligible
+                // Apply label only if not mixed
                 if (applyLabel)
+                {
                     cell.label = rawLabel;
+                }
 
-                // Apply alpha if changed
+                // Apply alpha only if not mixed
                 if (applyAlpha)
+                {
                     cell.alpha = newAlpha;
+                }
 
                 // Update tooltip
                 if (hexGridManager.tooltipManager != null)
                     hexGridManager.tooltipManager.UpdateCellTooltip(cell);
 
                 // Trigger visual refresh from model state
-                var vis = cell.GetComponent<HexTileVisuals>();
-                vis?.RefreshVisuals();
+                cell.GetComponent<HexTileVisuals>()?.RefreshVisuals();
             }
 
             ClearSelection();
@@ -295,6 +309,7 @@ public class HexEditorController : MonoBehaviour
             coordLabel.text = ""; // No hex selected
             typeDropdown.SetValueWithoutNotify(templates[0].name);
             costField.SetValueWithoutNotify(templates[0].movementCost);
+            costField.SetEnabled(true);
             labelField.SetValueWithoutNotify("");
             alphaSlider.SetEnabled(false);
             alphaValueLabel.text = "";
@@ -307,6 +322,7 @@ public class HexEditorController : MonoBehaviour
             coordLabel.text = $"({cell.coord.q}, {cell.coord.r})";
             typeDropdown.SetValueWithoutNotify(cell.terrainType);
             costField.SetValueWithoutNotify(cell.movementCost);
+            costField.SetEnabled(true);
             labelField.SetValueWithoutNotify(cell.label ?? "");
             alphaSlider.SetValueWithoutNotify(cell.alpha);
             alphaValueLabel.text = $"{cell.alpha:0.00}";
@@ -321,7 +337,19 @@ public class HexEditorController : MonoBehaviour
             bool allSameType = selectedHexes.All(h => h.terrainType == firstType);
             typeDropdown.SetValueWithoutNotify(allSameType ? firstType : "-- Mixed --");
 
-            costField.SetValueWithoutNotify(allSameType ? selectedHexes[0].movementCost : 0);
+            var firstCost = selectedHexes[0].movementCost;
+            bool allSameCost = selectedHexes.All(h => h.movementCost == firstCost);
+            if (allSameCost)
+            {
+                costField.SetEnabled(true);
+                costField.value = firstCost;
+                // TODO: Remove mixed class/tooltip here?
+            }
+            else
+            {
+                costField.SetEnabled(false); // Prevent editing when mixed
+                // TODO: Add a class like "mixed" to style italic/grey? Show label over value?
+            }
 
             var firstLabel = selectedHexes[0].label ?? "";
             bool allSameLabel = selectedHexes.All(h => (h.label ?? "") == firstLabel);

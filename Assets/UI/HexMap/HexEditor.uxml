@@ -1,10 +1,10 @@
-<!-- Assets/UI/HexMap/HexInspector.uxml -->
+<!-- Assets/UI/HexMap/Hexeditor.uxml -->
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd">
     <Style src="HexEditor.uss" />
     
     <ui:VisualElement class="ui-root"> 
         <!-- Map Settings Panel -->
-        <ui:VisualElement class="inspector-left" >
+        <ui:VisualElement class="editor-left" >
 
             <ui:VisualElement class="grid-settings">
                 <ui:Label text="Map Settings" class="header" />
@@ -28,9 +28,9 @@
                 
             </ui:VisualElement>
 
-        </ui:VisualElement> // Inspector Left Side
+        </ui:VisualElement> // Editor Left Side
         <!-- Hex Settings Panel -->
-        <ui:VisualElement class="inspector-right" > 
+        <ui:VisualElement class="editor-right" > 
 
             <ui:Label text="Hex Settings" class="header" />
 
@@ -70,6 +70,6 @@
 
             <ui:Button name="applyButton" text="Apply" />
 
-        </ui:VisualElement> // Inspector Right Side
+        </ui:VisualElement> // Editor Right Side
     </ui:VisualElement> // Root Visual Element
 </ui:UXML>
