@@ -11,11 +11,10 @@ using System.Linq;
 /// </summary>
 public class HexEditorController : MonoBehaviour
 {
-    public UIDocument uiDocument;
-    public HexGridManager hexGridManager; // <- Drag reference in Inspector
+    public UIDocument uiDocument; // <- Drag references in Inspector for these public fields
     public DataPersistenceManager dataPersistenceManager;
-    public MapDataService mapDataService;
-
+    public HexGridManager hexGridManager; 
+    public UITooltipManager tooltipManager;
     // UI element references
     private ComboBoxField mapNameField;
 
@@ -28,7 +27,7 @@ public class HexEditorController : MonoBehaviour
 
     private Label coordLabel;
     private DropdownField typeDropdown;
-    private IntegerField costField;
+    private TextField costField;
     private TextField labelField;
     private Slider alphaSlider;
     private Label alphaValueLabel;
@@ -123,10 +122,18 @@ public class HexEditorController : MonoBehaviour
         // Bind hex properties controls
         coordLabel = root.Q<Label>("coordLabel");
         typeDropdown = root.Q<DropdownField>("typeDropdown");
-        costField = root.Q<IntegerField>("costField");
+        costField = root.Q<TextField>("costField");
+        costField.value = "1";
+        costField.tooltip = "Movement cost of the hex tile.\n" +
+                            "Must be a positive integer.\n" +
+                            "Use '-- Mixed --' to indicate mixed selection.";
+        tooltipManager.ObserveTooltip(costField);
         labelField = root.Q<TextField>("labelField");
-        costField.value = 1;
         labelField.value = "";
+
+        // Add validation for cost field
+        costField.RegisterValueChangedCallback(evt => ValidateCostField());
+
         alphaSlider = root.Q<Slider>("alphaSlider");
         alphaSlider.pageSize = 0.01f; // Allow fine values for slider
         alphaSlider.value = 1f; // Default alpha value
@@ -149,31 +156,47 @@ public class HexEditorController : MonoBehaviour
         // Populate dropdown and default selection
         typeDropdown.choices = templates.Select(t => t.name).ToList();
         typeDropdown.SetValueWithoutNotify(templates[0].name);
-        costField.SetValueWithoutNotify(templates[0].movementCost);
+        costField.SetValueWithoutNotify(templates[0].movementCost.ToString());
 
         // When dropdown changes, update cost + highlight selection
         typeDropdown.RegisterValueChangedCallback(evt =>
         {
             TerrainTemplate template = templates.FirstOrDefault(t => t.name == evt.newValue);
-            costField.SetValueWithoutNotify(template.movementCost);
+            costField.SetValueWithoutNotify(template.movementCost.ToString());
             foreach (var cell in selectedHexes)
                 cell.GetComponent<HexTileVisuals>()?.SetSelected(true);
         });
 
         // Apply terrain properties to all selected tiles
         applyButton = root.Q<Button>("applyButton");
+        applyButton.tooltip = "Click to apply changes to selected hexes";
         applyButton.clicked += () =>
         {
             if (selectedHexes.Count == 0) return;
 
+            // Validate cost field before applying any changes
+            if (!ValidateCostField())
+            {
+                Debug.LogWarning("Cannot apply changes: Invalid movement cost value");
+                return;
+            }
+
             string selectedType = typeDropdown.value;
             string rawLabel = labelField.value ?? "";
             float newAlpha = alphaSlider.value;
+            string rawCost = costField.value ?? "";
+            int newCost = 1;
 
             // Determine what to apply based on mixed field states
-            bool applyTerrain = selectedType != "-- Mixed --";
-            bool applyLabel = rawLabel != "-- Mixed --";
-            bool applyAlpha = alphaValueLabel.text != "-- Mixed --";
+            bool applyTerrain = selectedType != "-- Mixed --" &&
+                selectedHexes[0].terrainType != typeDropdown.value;
+            bool applyLabel = rawLabel != "-- Mixed --" &&
+                (selectedHexes[0].label ?? "") != labelField.value;
+            bool applyCost = rawCost != "-- Mixed --" &&
+                int.TryParse(rawCost, out newCost) &&
+                selectedHexes[0].movementCost != newCost;
+            bool applyAlpha = alphaValueLabel.text != "-- Mixed --" &&
+                !Mathf.Approximately(selectedHexes[0].alpha, newAlpha);
 
             TerrainTemplate template = null;
             if (applyTerrain)
@@ -187,6 +210,12 @@ public class HexEditorController : MonoBehaviour
                 if (applyTerrain && template != null)
                 {
                     cell.SetProperties(template.name, template.movementCost);
+                }
+                else if (applyCost)
+                {
+                    // Apply cost independently if terrain isn't being changed
+                    cell.movementCost = newCost;
+
                 }
 
                 // Apply label only if not mixed
@@ -211,6 +240,38 @@ public class HexEditorController : MonoBehaviour
 
             ClearSelection();
         };
+        UpdateSelectionUI(); // ensure the UI reflects the cleared state
+    }
+
+    /// <summary>
+    /// Validates the cost field input and applies visual feedback.
+    /// Returns true if valid, false otherwise.
+    /// </summary>
+    private bool ValidateCostField()
+    {
+
+        string value = costField.value?.Trim() ?? "";
+
+        // Allow mixed state placeholder
+        if (value == "-- Mixed --")
+        {
+            costField.RemoveFromClassList("invalid-input");
+            costField.tooltip = "";
+            return true;
+        }
+
+        // Validate positive integer
+        if (int.TryParse(value, out int cost) && cost > 0)
+        {
+            costField.RemoveFromClassList("invalid-input");
+            costField.tooltip = "";
+            return true;
+        }
+
+        // Invalid input - apply error styling
+        costField.AddToClassList("invalid-input");
+        costField.tooltip = "Movement cost must be a positive integer";
+        return false;
     }
 
     /// <summary>
@@ -229,7 +290,7 @@ public class HexEditorController : MonoBehaviour
     {
         coordLabel.text = $"({coords.x}, {coords.y})";
         typeDropdown.value = type;
-        costField.value = cost;
+        costField.value = cost.ToString();
     }
 
     /// <summary>
@@ -306,24 +367,33 @@ public class HexEditorController : MonoBehaviour
     {
         if (selectedHexes.Count == 0)
         {
-            coordLabel.text = ""; // No hex selected
+            coordLabel.text = "";
+
             typeDropdown.SetValueWithoutNotify(templates[0].name);
-            costField.SetValueWithoutNotify(templates[0].movementCost);
-            costField.SetEnabled(true);
+            typeDropdown.SetEnabled(false);
+
+            costField.SetValueWithoutNotify(templates[0].movementCost.ToString());
+            costField.SetEnabled(false);
+
             labelField.SetValueWithoutNotify("");
+            labelField.SetEnabled(false);
+
+            alphaSlider.SetValueWithoutNotify(1f);
             alphaSlider.SetEnabled(false);
             alphaValueLabel.text = "";
+
             return;
         }
-
         if (selectedHexes.Count == 1)
         {
             var cell = selectedHexes[0];
             coordLabel.text = $"({cell.coord.q}, {cell.coord.r})";
             typeDropdown.SetValueWithoutNotify(cell.terrainType);
-            costField.SetValueWithoutNotify(cell.movementCost);
+            typeDropdown.SetEnabled(true);
+            costField.SetValueWithoutNotify(cell.movementCost.ToString());
             costField.SetEnabled(true);
             labelField.SetValueWithoutNotify(cell.label ?? "");
+            labelField.SetEnabled(true);
             alphaSlider.SetValueWithoutNotify(cell.alpha);
             alphaValueLabel.text = $"{cell.alpha:0.00}";
             alphaValueLabel.RemoveFromClassList("mixed");
@@ -336,26 +406,18 @@ public class HexEditorController : MonoBehaviour
             var firstType = selectedHexes[0].terrainType;
             bool allSameType = selectedHexes.All(h => h.terrainType == firstType);
             typeDropdown.SetValueWithoutNotify(allSameType ? firstType : "-- Mixed --");
+            typeDropdown.SetEnabled(true);
 
             var firstCost = selectedHexes[0].movementCost;
             bool allSameCost = selectedHexes.All(h => h.movementCost == firstCost);
-            if (allSameCost)
-            {
-                costField.SetEnabled(true);
-                costField.value = firstCost;
-                // TODO: Remove mixed class/tooltip here?
-            }
-            else
-            {
-                costField.SetEnabled(false); // Prevent editing when mixed
-                // TODO: Add a class like "mixed" to style italic/grey? Show label over value?
-            }
+            costField.SetValueWithoutNotify(allSameCost ? firstCost.ToString() : "-- Mixed --");
+            costField.SetEnabled(true);
 
             var firstLabel = selectedHexes[0].label ?? "";
             bool allSameLabel = selectedHexes.All(h => (h.label ?? "") == firstLabel);
             labelField.SetValueWithoutNotify(allSameLabel ? firstLabel : "-- Mixed --");
+            labelField.SetEnabled(true);
 
-            alphaSlider.SetEnabled(true);
             var uniqueAlphas = selectedHexes.Select(h => h.alpha).Distinct().ToList();
             if (uniqueAlphas.Count == 1)
             {
@@ -370,7 +432,12 @@ public class HexEditorController : MonoBehaviour
                 alphaValueLabel.text = "-- Mixed --";
                 alphaValueLabel.AddToClassList("mixed");
             }
+            alphaSlider.SetEnabled(true);
         }
+
+        // Validate cost field after updating
+        ValidateCostField();
+
     }
 
     // Handle keyboard input while the UI has focus

@@ -158,6 +158,16 @@ TextField {
     min-width: 30;
 }
 
+TextField.invalid-input {
+    background-color: rgba(255, 100, 100, 0.3);
+    border-color: #FF6464;
+}
+
+TextField.invalid-input > .unity-text-field__input {
+    background-color: rgba(255, 100, 100, 0.3);
+    border-color: #FF6464;
+}
+
 IntegerField {
     color: #2D2D2D; /* input field font color */
     min-width: 0;

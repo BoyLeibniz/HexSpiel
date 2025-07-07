@@ -44,7 +44,7 @@
 
             <ui:VisualElement class="field-row">
                 <ui:Label text="Moves" class="field-label" />
-                <ui:IntegerField name="costField" class="hex-field" />
+                <ui:TextField name="costField" class="hex-field" />
             </ui:VisualElement>
 
             <ui:VisualElement class="field-row">

@@ -612,6 +612,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1004667700}
   - component: {fileID: 1004667699}
+  - component: {fileID: 1004667701}
   m_Layer: 0
   m_Name: HexTooltipManager
   m_TagString: Untagged
@@ -651,6 +652,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1004667701
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1004667698}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7f0b13da94311d40be29a292f119d64, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  uiDocument: {fileID: 1728070096}
 --- !u!1 &1728070094
 GameObject:
   m_ObjectHideFlags: 0
@@ -682,8 +696,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   uiDocument: {fileID: 1728070096}
-  hexGridManager: {fileID: 1918321940}
   dataPersistenceManager: {fileID: 680761820}
+  hexGridManager: {fileID: 1918321940}
+  tooltipManager: {fileID: 1004667701}
 --- !u!114 &1728070096
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -103,13 +103,13 @@ public class HexTileVisuals : MonoBehaviour
         if (editorController == null || hexCell == null)
             return;
 
-        Debug.Log($"{name} UpdateVisualState → " +
-            $"terrainType: '{hexCell.terrainType}', " +
-            $"isSelected: {isSelected}, isHovered: {isHovered}, " +
-            $"baseColor: {baseColor}, " +
-            $"GetTerrainColor: {editorController.GetTerrainColor(hexCell.terrainType)}, " +
-            $"hexAlpha: {hexCell.alpha}, " +
-            $"showTransparency: {editorController.GetShowTransparency()}");
+        //Debug.Log($"{name} UpdateVisualState → " +
+        //    $"terrainType: '{hexCell.terrainType}', " +
+        //    $"isSelected: {isSelected}, isHovered: {isHovered}, " +
+        //    $"baseColor: {baseColor}, " +
+        //    $"GetTerrainColor: {editorController.GetTerrainColor(hexCell.terrainType)}, " +
+        //    $"hexAlpha: {hexCell.alpha}, " +
+        //    $"showTransparency: {editorController.GetShowTransparency()}");
 
         // Determine effective terrain color
         Color terrainColor = baseColor; // fallback for untyped tiles
