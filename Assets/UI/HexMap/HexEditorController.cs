@@ -165,7 +165,13 @@ public class HexEditorController : MonoBehaviour
             costField.SetValueWithoutNotify(template.movementCost.ToString());
             foreach (var cell in selectedHexes)
                 cell.GetComponent<HexTileVisuals>()?.SetSelected(true);
+            UpdateApplyButtonState(); // Update button state when terrain type changes
         });
+
+        // Register change handlers for other input fields to update apply button state
+        costField.RegisterValueChangedCallback(evt => UpdateApplyButtonState());
+        labelField.RegisterValueChangedCallback(evt => UpdateApplyButtonState());
+        alphaSlider.RegisterValueChangedCallback(evt => UpdateApplyButtonState());
 
         // Apply terrain properties to all selected tiles
         applyButton = root.Q<Button>("applyButton");
@@ -382,6 +388,8 @@ public class HexEditorController : MonoBehaviour
             alphaSlider.SetEnabled(false);
             alphaValueLabel.text = "";
 
+            // Disable apply button when no hexes selected
+            applyButton.SetEnabled(false);
             return;
         }
         if (selectedHexes.Count == 1)
@@ -438,6 +446,51 @@ public class HexEditorController : MonoBehaviour
         // Validate cost field after updating
         ValidateCostField();
 
+        // Update apply button state based on whether there are changes to apply
+        UpdateApplyButtonState();
+    }
+
+    /// <summary>
+    /// Updates the enabled state of the Apply button based on whether there are changes to apply.
+    /// </summary>
+    private void UpdateApplyButtonState()
+    {
+        if (selectedHexes.Count == 0)
+        {
+            applyButton.SetEnabled(false);
+            return;
+        }
+
+        bool hasChanges = HasChangesToApply();
+        applyButton.SetEnabled(hasChanges);
+    }
+
+    /// <summary>
+    /// Checks if there are any changes that can be applied to the selected hexes.
+    /// Returns true if there are changes to apply, false otherwise.
+    /// </summary>
+    private bool HasChangesToApply()
+    {
+        if (selectedHexes.Count == 0) return false;
+
+        string selectedType = typeDropdown.value;
+        string rawLabel = labelField.value ?? "";
+        float newAlpha = alphaSlider.value;
+        string rawCost = costField.value ?? "";
+        int newCost = 1;
+
+        // Check if any field has changed from the current hex values
+        bool terrainChanged = selectedType != "-- Mixed --" &&
+            selectedHexes[0].terrainType != typeDropdown.value;
+        bool labelChanged = rawLabel != "-- Mixed --" &&
+            (selectedHexes[0].label ?? "") != labelField.value;
+        bool costChanged = rawCost != "-- Mixed --" &&
+            int.TryParse(rawCost, out newCost) &&
+            selectedHexes[0].movementCost != newCost;
+        bool alphaChanged = alphaValueLabel.text != "-- Mixed --" &&
+            !Mathf.Approximately(selectedHexes[0].alpha, newAlpha);
+
+        return terrainChanged || labelChanged || costChanged || alphaChanged;
     }
 
     // Handle keyboard input while the UI has focus

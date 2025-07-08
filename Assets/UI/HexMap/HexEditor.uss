@@ -184,8 +184,13 @@ Button {
     font-weight: bold;
 }
 
+Button:disabled {
+    color: #666666;
+    background-color: #333333;
+    opacity: 0.5;
+}
+
 #typeDropdown {
     color: white;
     margin-left: 0;
 }
-
