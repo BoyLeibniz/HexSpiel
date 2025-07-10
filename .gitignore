@@ -36,6 +36,9 @@
 # Visual Studio Code settings directory
 .vscode/
 
+# macOS system files
+.DS_Store
+
 # Gradle cache directory
 .gradle/
 
